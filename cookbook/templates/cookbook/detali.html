@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ recipe.title }} — Книга рецептов</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .nav-bar { background: #ffffff; border-b: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .nav-container { max-width: 896px; margin: 0 auto; height: 64px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; margin-left: 24px; color: #64748b; }
+        .nav-links .fav-link { color: #dc2626; }
+        .container { max-width: 896px; margin: 32px auto; padding: 0 20px; box-sizing: border-box; flex-grow: 1; }
+        .wrapper { background: #ffffff; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); padding: 40px; margin-bottom: 32px; }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.875rem; font-weight: 500; color: #94a3b8; text-decoration: none; margin-bottom: 24px; }
+        .back-link:hover { color: #dc2626; }
+        .title-area { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
+        h1 { margin: 0; font-size: 2.25rem; font-weight: 800; color: #0f172a; tracking: -0.025em; }
+        .fav-btn { text-decoration: none; font-size: 0.875rem; font-weight: 600; color: #dc2626; background: #fef2f2; padding: 10px 20px; border-radius: 12px; }
+        .meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
+        .badge { font-size: 0.75rem; font-weight: 600; padding: 6px 14px; border-radius: 9999px; }
+        .b-slate { background: #f1f5f9; color: #475569; }
+        .b-indigo { background: #fef2f2; color: #b91c1c; }
+        .b-amber { background: #fef3c7; color: #b45309; }
+        .main-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; margin-bottom: 32px; }
+        .grid-layout { display: grid; grid-template-columns: 1fr; gap: 32px; }
+        @media (min-width: 768px) { .grid-layout { grid-template-columns: 1fr 2fr; } }
+        .ingredients-card { background: #f8fafc; padding: 24px; border-radius: 16px; border: 1px solid #f1f5f9; }
+        h2 { margin: 0 0 16px 0; font-size: 1.125rem; font-weight: 700; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; }
+        .text-block { font-size: 0.9375rem; line-height: 1.7; color: #475569; }
+        .text-block p { margin: 0 0 12px 0; }
+        .similar-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 16px; }
+        .similar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-bottom: 32px; }
+        .similar-card { background: #fff; border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; display: block; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.2s; }
+        .similar-card:hover { transform: translateY(-2px); }
+        .similar-card img { width: 100%; height: 140px; object-fit: cover; display: block; }
+        .similar-body { padding: 12px; }
+        .similar-body h4 { margin: 0; font-size: 1rem; font-weight: 700; color: #0f172a; }
+        .footer { background: #ffffff; border-top: 1px solid #f1f5f9; padding: 24px 20px; text-align: center; font-size: 0.875rem; color: #64748b; width: 100%; box-sizing: border-box; }
+        .footer a { color: #dc2626; text-decoration: none; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="{% url 'recipe_list' %}" class="nav-logo">🍳 Книга рецептов</a>
+            <div class="nav-links">
+                <a href="{% url 'recipe_list' %}">Главная</a>
+                <a href="{% url 'favorites_list' %}" class="fav-link">❤️ Избранное ({{ fav_count }})</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="wrapper">
+            <a href="{% url 'recipe_list' %}" class="back-link">← Вернуться к поиску</a>
+            <div class="title-area">
+                <h1>{{ recipe.title }}</h1>
+                <a href="{% url 'toggle_favorite' recipe.pk %}" class="fav-btn">
+                    {% if recipe.pk in request.session.favorites %}❤️ В избранном{% else %}🤍 В избранное{% endif %}
+                </a>
+            </div>
+            <div class="meta">
+                <span class="badge b-slate">Сложность: 
+                    {% if recipe.difficulty == 'easy' %}Легко
+                    {% elif recipe.difficulty == 'medium' %}Средне
+                    {% elif recipe.difficulty == 'hard' %}Сложно
+                    {% else %}{{ recipe.difficulty }}{% endif %}
+                </span>
+                {% if recipe.category %}<span class="badge b-indigo">Категория: {{ recipe.category.name }}</span>{% endif %}
+                {% if recipe.time_minutes %}<span class="badge b-amber">⏱ {{ recipe.time_minutes }} мин.</span>{% endif %}
+            </div>
+            {% if recipe.image %}
+                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="main-img">
+            {% else %}
+                <img src="https://picsum.photos{{ recipe.id }}/600/400" alt="{{ recipe.title }}" class="main-img">
+            {% endif %}
+            <div class="grid-layout">
+                <div class="ingredients-card">
+                    <h2>Ингредиенты</h2>
+                    <div class="text-block">{{ recipe.ingredients|linebreaks }}</div>
+                </div>
+                <div>
+                    <h2>Процесс приготовления</h2>
+                    <div class="text-block" style="font-size:1rem; color:#334155;">{{ recipe.description|linebreaks }}</div>
+                </div>
+            </div>
+        </div>
+        {% if similar_recipes %}
+        <h3 class="similar-title">Похожие кулинарные шедевры</h3>
+        <div class="similar-grid">
+            {% for sim in similar_recipes %}
+            <a href="{% url 'recipe_detail' sim.pk %}" class="similar-card">
+                {% if sim.image %}
+                    <img src="{{ sim.image.url }}" alt="">
+                {% else %}
+                    <img src="https://picsum.photos{{ sim.id }}/600/400" alt="">
+                {% endif %}
+                <div class="similar-body">
+                    <h4>{{ sim.title }}</h4>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <footer class="footer">
+        <div>© 2026 Разработано Кадралиевым Оятулло в качестве коммерческого кейса.</div>
+        <div style="margin-top: 8px;">Связаться со мной: <a href="mailto:oyatillokadraliev@gmail.com">oyatillokadraliev@gmail.com</a> | Telegram: <a href="https://t.me" target="_blank">@kadraliev_007</a></div>
+    </footer>
+</body>
+</html>

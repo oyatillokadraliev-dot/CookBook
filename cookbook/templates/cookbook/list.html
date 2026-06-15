@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Книга рецептов — Главная</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .nav-bar { background: #ffffff; border-bottom: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
+        .nav-container { max-width: 1200px; margin: 0 auto; height: 64px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; margin-left: 24px; }
+        .nav-links .fav-link { color: #dc2626; background: #fef2f2; padding: 6px 14px; border-radius: 9999px; }
+        .nav-links .add-link { color: #ffffff; background: #dc2626; padding: 6px 14px; border-radius: 9999px; }
+        .layout-table { width: 100%; max-width: 1200px; margin: 32px auto; padding: 0 20px; border-collapse: collapse; box-sizing: border-box; flex-grow: 1; }
+        .sidebar-cell { width: 240px; vertical-align: top; padding-right: 32px; }
+        .content-cell { vertical-align: top; }
+        .sidebar h2 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin: 0 0 16px 0; }
+        .category-list { list-style: none; padding: 0; margin: 0; }
+        .category-item { margin-bottom: 8px; }
+        .category-link { display: block; padding: 10px 16px; background: #ffffff; border-radius: 12px; text-decoration: none; color: #475569; font-size: 0.875rem; font-weight: 500; border: 1px solid #f1f5f9; }
+        .category-link:hover { background: #fef2f2; color: #dc2626; }
+        .category-link.active { background: #dc2626; color: #ffffff; }
+        .content-area { display: flex; flex-direction: column; gap: 24px; }
+        .search-form { display: flex; gap: 12px; background: #ffffff; padding: 8px; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .search-input { flex-grow: 1; border: none; padding: 8px 16px; font-size: 0.875rem; outline: none; color: #1e293b; background: transparent; }
+        .search-button { background: #dc2626; color: #ffffff; border: none; padding: 10px 24px; font-size: 0.875rem; font-weight: 500; border-radius: 12px; cursor: pointer; }
+        .search-button:hover { background: #b91c1c; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 12px 20px; border-radius: 16px; border: 1px solid #f1f5f9; }
+        .sort-select { padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.875rem; color: #475569; outline: none; }
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+        .card { background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.02); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-4px); }
+        .card-img-wrapper { aspect-ratio: 16/9; background: #f1f5f9; overflow: hidden; }
+        .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; }
+        .card h3 { margin: 0; font-size: 1.125rem; font-weight: 700; color: #1e293b; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; }
+        .difficulty-badge { font-size: 0.75rem; font-weight: 600; color: #475569; background: #f1f5f9; padding: 4px 10px; border-radius: 8px; }
+        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+        .page-link { padding: 8px 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; text-decoration: none; color: #475569; font-size: 0.875rem; font-weight: 500; }
+        .page-link.active { background: #dc2626; color: #fff; border-color: #dc2626; }
+        .footer { background: #ffffff; border-top: 1px solid #e2e8f0; padding: 32px 20px; text-align: center; font-size: 0.875rem; color: #64748b; margin-top: auto; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
+        .footer-container { max-width: 1200px; margin: 0 auto; }
+        .footer a { color: #dc2626; text-decoration: none; font-weight: 600; margin: 0 4px; }
+        .footer a:hover { text-decoration: underline; }
+        @media (max-width: 768px) { .layout-table, tr, td { display: block; width: 100% !important; } .sidebar-cell { padding-right: 0; margin-bottom: 24px; } }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="{% url 'recipe_list' %}" class="nav-logo"><span>🍳</span> Книга рецептов</a>
+            <div class="nav-links">
+                <a href="{% url 'recipe_add' %}" class="add-link">+ Добавить рецепт</a>
+                <a href="{% url 'favorites_list' %}" class="fav-link">❤️ Избранное ({{ fav_count }})</a>
+            </div>
+        </div>
+    </nav>
+
+    <table class="layout-table">
+        <tr>
+            <td class="sidebar-cell">
+                <aside class="sidebar">
+                    <h2>Категории меню</h2>
+                    <ul class="category-list">
+                        <li class="category-item">
+                            <a href="{% url 'recipe_list' %}" class="category-link {% if not current_category %}active{% endif %}">Все кулинарные шедевры</a>
+                        </li>
+                        {% for cat in category %}
+                        <li class="category-item">
+                            <a href="{% url 'recipe_list' %}?category={{ cat.id }}{% if search_query %}&search={{ search_query }}{% endif %}" class="category-link {% if current_category == cat.id|slugify %}active{% endif %}">{{ cat.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </aside>
+            </td>
+
+            <td class="content-cell">
+                <div class="content-area">
+                    <form method="GET" action="{% url 'recipe_list' %}" class="search-form">
+                        {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
+                        <input type="text" name="search" class="search-input" placeholder="Найдите рецепт или ингредиент..." value="{{ search_query|default:'' }}">
+                        <button type="submit" class="search-button">Найти</button>
+                    </form>
+                    
+                    <div class="toolbar">
+                        <span style="font-size: 0.875rem; color: #64748b;">Рецепты на странице: {{ recipes.object_list.count }}</span>
+                        <select class="sort-select" onchange="location = this.value;">
+                            <option value="?sort=new{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" {% if current_sort == 'new' or not current_sort %}selected{% endif %}>Сначала новые</option>
+                            <option value="?sort=time{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" {% if current_sort == 'time' %}selected{% endif %}>По времени готовки</option>
+                            <option value="?sort=difficulty{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" {% if current_sort == 'difficulty' %}selected{% endif %}>По сложности</option>
+                        </select>
+                    </div>
+
+                    <main class="recipe-grid">
+                        {% block content %}
+                        {% for recipe in recipes %}
+                        <a href="{% url 'recipe_detail' recipe.pk %}" class="card">
+                            <div class="card-img-wrapper">
+                                {% if recipe.image %}
+                                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+                                {% else %}
+                                    <img src="https://picsum.photos{{ recipe.id }}/600/400" alt="{{ recipe.title }}">
+                                {% endif %}
+                            </div>
+                            <div class="card-content">
+                                <h3>{{ recipe.title }}</h3>
+                                <div class="card-footer">
+                                    <span class="difficulty-badge">
+                                        {% if recipe.difficulty == 'easy' %}🟢 Легко
+                                        {% elif recipe.difficulty == 'medium' %}🟡 Средне
+                                        {% elif recipe.difficulty == 'hard' %}🔴 Сложно
+                                        {% else %}{{ recipe.difficulty }}{% endif %}
+                                    </span>
+                                    <span style="font-size: 0.875rem; font-weight: 600; color: #dc2626;">Смотреть →</span>
+                                </div>
+                            </div>
+                        </a>
+                        {% empty %}
+                        <div style="grid-column:1/-1; text-align:center; padding:48px; color:#94a3b8; background:#fff; border-radius:16px;">Ничего не найдено.</div>
+                        {% endfor %}
+                        {% endblock %}
+                    </main>
+
+                    <!-- ИСПРАВЛЕННЫЙ БЛОК ПАГИНАЦИИ (СТРАНИЦЫ) -->
+                    {% if recipes.has_other_pages %}
+                    <div class="pagination">
+                        {% if recipes.has_previous %}
+                            <a href="?page={{ recipes.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-link">←</a>
+                        {% endif %}
+                        
+                        {% for num in recipes.paginator.page_range %}
+                            {% if recipes.number == num %}
+                                <span class="page-link active">{{ num }}</span>
+                            {% else %}
+                                <a href="?page={{ num }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-link">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if recipes.has_next %}
+                            <a href="?page={{ recipes.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-link">→</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- НОВЫЙ АККУРАТНЫЙ ФУТЕР В ВИДЕ СТИЛЬНОГО ГОЛУБОГО ОКОШКА НА ВСЮ ШИРИНУ -->
+    <footer style="background: #f0fdf4; background-color: #f0f9ff; border-top: 2px solid #bae6fd; padding: 24px 20px; margin-top: auto; font-family: system-ui, -apple-system, sans-serif;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <div style="font-weight: 700; color: #0369a1; font-size: 0.95rem; margin-bottom: 4px;">
+                    © 2026 Разработано Кадралиевым Оятулло
+                </div>
+                <div style="font-size: 0.85rem; color: #0284c7; font-weight: 500;">
+                    Проект разработан в качестве коммерческого кейса для личного портфолио
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <a href="mailto:oyatillokadraliev@gmail.com" style="color: #0369a1; background: #ffffff; border: 1px solid #bae6fd; text-decoration: none; padding: 10px 18px; border-radius: 12px; font-size: 0.875rem; font-weight: 600; box-shadow: 0 2px 4px rgba(3, 105, 161, 0.04); transition: all 0.2s;">
+                    ✉️ oyatillokadraliev@gmail.com
+                </a>
+                <a href="https://t.me" target="_blank" style="color: #ffffff; background: #0284c7; text-decoration: none; padding: 10px 20px; border-radius: 12px; font-size: 0.875rem; font-weight: 600; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2); transition: all 0.2s;">
+                    💬 Написать в Telegram
+                </a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

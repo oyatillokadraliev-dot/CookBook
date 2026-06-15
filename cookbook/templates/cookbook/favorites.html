@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Избранное — Книга рецептов</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .nav-bar { background: #ffffff; border-b: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .nav-container { max-width: 1200px; margin: 0 auto; height: 64px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; margin-left: 24px; color: #64748b; }
+        .nav-links .fav-link { color: #dc2626; font-weight: 600; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; flex-grow: 1; }
+        h1 { font-size: 1.875rem; font-weight: 900; tracking: -0.025em; color: #0f172a; margin-bottom: 32px; display: flex; align-items: center; gap: 8px; }
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        .card { background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; }
+        .img-wrapper { aspect-ratio: 16/9; background: #f1f5f9; overflow: hidden; position: relative; }
+        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .remove-btn { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); color: #dc2626; text-decoration: none; padding: 6px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card-content { padding: 20px; }
+        .card h2 { margin: 0 0 16px 0; font-size: 1.125rem; font-weight: 700; }
+        .card h2 a { color: #0f172a; text-decoration: none; }
+        .card h2 a:hover { color: #dc2626; }
+        .meta-list { font-size: 0.75rem; color: #64748b; font-weight: 500; }
+        .meta-list p { margin: 6px 0; }
+        .meta-list span { color: #334155; }
+        .card-footer { padding: 0 20px 20px 20px; }
+        .open-btn { display: block; text-align: center; background: #f8fafc; color: #475569; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 10px 0; border-radius: 12px; transition: all 0.2s; }
+        .open-btn:hover { background: #fef2f2; color: #dc2626; }
+        .empty-state { text-align: center; padding: 64px 0; color: #94a3b8; background: #ffffff; border-radius: 16px; border: 1px solid #f1f5f9; grid-column: 1/-1; }
+        .empty-btn { display: inline-block; margin-top: 16px; background: #dc2626; color: white; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 10px 20px; border-radius: 12px; }
+        .footer { background: #ffffff; border-top: 1px solid #e2e8f0; padding: 32px 20px; text-align: center; font-size: 0.875rem; color: #64748b; margin-top: auto; }
+        .footer a { color: #dc2626; text-decoration: none; font-weight: 600; margin: 0 4px; }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <a href="{% url 'recipe_list' %}" class="nav-logo">🍳 Книга рецептов</a>
+            <div class="nav-links">
+                <a href="{% url 'recipe_list' %}">Главная</a>
+                <a href="{% url 'favorites_list' %}" class="fav-link">❤️ Избранное ({{ fav_count }})</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>❤️ Сохраненные рецепты</h1>
+        {% block content %}
+        <div class="recipe-grid">
+            {% for recipe in recipes %}
+            <div class="card">
+                <div>
+                    <div class="img-wrapper">
+                        {% if recipe.image %}
+                            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+                        {% else %}
+                            <img src="https://picsum.photos{{ recipe.id }}/600/400" alt="{{ recipe.title }}">
+                        {% endif %}
+                        <a href="{% url 'toggle_favorite' recipe.pk %}" class="remove-btn">Убрать ❌</a>
+                    </div>
+                    <div class="card-content">
+                        <h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></h2>
+                        <div class="meta-list">
+                            <p>📁 Категория: <span>{{ recipe.category|default:"Не указана" }}</span></p>
+                            <p>⏱ Время: <span>{{ recipe.time_minutes }} мин.</span></p>
+                            <p>📊 Сложность: <span>
+                                {% if recipe.difficulty == 'easy' %}Легко
+                                {% elif recipe.difficulty == 'medium' %}Средне
+                                {% elif recipe.difficulty == 'hard' %}Сложно
+                                {% else %}{{ recipe.difficulty }}{% endif %}
+                            </span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'recipe_detail' recipe.pk %}" class="open-btn">Открыть рецепт</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <p style="margin: 0;">В вашем списке избранного пока пусто.</p>
+                <a href="{% url 'recipe_list' %}" class="empty-btn">Изучить рецепты</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endblock %}
+    </div>
+
+    <footer class="footer">
+        <div style="font-weight: 600; color: #1e293b; margin-bottom: 6px;">© 2026 Разработано Кадралиевым Оятулло в качестве коммерческого кейса.</div>
+        <div>Связаться со мной: <a href="mailto:oyatillokadraliev@gmail.com">oyatillokadraliev@gmail.com</a> | Telegram: <a href="https://t.me" target="_blank">@kadraliev_007</a></div>
+    </footer>
+</body>
+</html>
