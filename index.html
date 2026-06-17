@@ -50,10 +50,14 @@
 <body>
     <nav class="nav-bar">
         <div class="nav-container">
-            <a href="{% url 'recipe_list' %}" class="nav-logo"><span>🍳</span> Книга рецептов</a>
-            <div class="nav-links">
-                <a href="{% url 'recipe_add' %}" class="add-link">+ Добавить рецепт</a>
-                <a href="{% url 'favorites_list' %}" class="fav-link">❤️ Избранное ({{ fav_count }})</a>
+<a href="index.html" class="nav-logo"><span>🍳</span> Книга рецептов</a>
+<div class="nav-links">
+    <!-- Ссылка ведет на страницу создания рецепта -->
+    <a href="recipe_form.html" class="add-link">+ Добавить рецепт</a>
+    <!-- Ссылка ведет на страницу избранного, счетчик пока оставляем статичным числом -->
+    <a href="favorites.html" class="fav-link">❤️ Избранное (3)</a>
+</div>
+
             </div>
         </div>
     </nav>
@@ -65,20 +69,30 @@
                     <h2>Категории меню</h2>
                     <ul class="category-list">
                         <li class="category-item">
-                            <a href="{% url 'recipe_list' %}" class="category-link {% if not current_category %}active{% endif %}">Все кулинарные шедевры</a>
+                       <a href="index.html" class="category-link active">Все кулинарные шедевры</a>
                         </li>
-                        {% for cat in category %}
+                        <!-- Вручную выводим 4 самые популярные категории для демонстрации в портфолио -->
                         <li class="category-item">
-                            <a href="{% url 'recipe_list' %}?category={{ cat.id }}{% if search_query %}&search={{ search_query }}{% endif %}" class="category-link {% if current_category == cat.id|slugify %}active{% endif %}">{{ cat.name }}</a>
+                            <a href="index.html" class="category-link">🍕 Пицца и Паста</a>
                         </li>
-                        {% endfor %}
+                        <li class="category-item">
+                            <a href="index.html" class="category-link">🍔 Бургеры и Закуски</a>
+                        </li>
+                        <li class="category-item">
+                            <a href="index.html" class="category-link">🍣 Суши и Роллы</a>
+                        </li>
+                        <li class="category-item">
+                            <a href="index.html" class="category-link">🥐 Выпечка и Десерты</a>
+                        </li>
                     </ul>
                 </aside>
             </td>
 
             <td class="content-cell">
                 <div class="content-area">
-                    <form method="GET" action="{% url 'recipe_list' %}" class="search-form">
+                    <!-- Исправили экшен формы поиска на главную страницу -->
+                    <form method="GET" action="index.html" class="search-form">
+
                         {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
                         <input type="text" name="search" class="search-input" placeholder="Найдите рецепт или ингредиент..." value="{{ search_query|default:'' }}">
                         <button type="submit" class="search-button">Найти</button>
@@ -96,7 +110,8 @@
                     <main class="recipe-grid">
                         {% block content %}
                         {% for recipe in recipes %}
-                        <a href="{% url 'recipe_detail' recipe.pk %}" class="card">
+   <a href="detali.html" class="card">
+
                             <div class="card-img-wrapper">
                                 {% if recipe.image %}
                                     <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
