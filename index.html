@@ -89,45 +89,52 @@
             </td>
 
             <td class="content-cell">
-                <div class="content-area">
-                    <!-- Исправили экшен формы поиска на главную страницу -->
+<div class="content-area">
+                    <!-- Форма поиска (ссылается на index.html) -->
                     <form method="GET" action="index.html" class="search-form">
-
-                        {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
-                        <input type="text" name="search" class="search-input" placeholder="Найдите рецепт или ингредиент..." value="{{ search_query|default:'' }}">
+                        <input type="text" name="search" class="search-input" placeholder="Найдите рецепт или ингредиент...">
                         <button type="submit" class="search-button">Найти</button>
                     </form>
                     
+                    <!-- Панель инструментов (убрали Django-теги) -->
                     <div class="toolbar">
-                        <span style="font-size: 0.875rem; color: #64748b;">Рецепты на странице: {{ recipes.object_list.count }}</span>
-                        <select class="sort-select" onchange="location = this.value;">
-                            <option value="?sort=new{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" {% if current_sort == 'new' or not current_sort %}selected{% endif %}>Сначала новые</option>
-                            <option value="?sort=time{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" {% if current_sort == 'time' %}selected{% endif %}>По времени готовки</option>
-                            <option value="?sort=difficulty{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" {% if current_sort == 'difficulty' %}selected{% endif %}>По сложности</option>
+                        <span style="font-size: 0.875rem; color: #64748b;">Рецепты на странице: 1</span>
+                        <select class="sort-select">
+                            <option value="new" selected>Сначала новые</option>
+                            <option value="time">По времени готовки</option>
+                            <option value="difficulty">По сложности</option>
                         </select>
                     </div>
 
-                    <main class="recipe-grid">
-                        {% block content %}
-                        {% for recipe in recipes %}
+                    <!-- Сетка рецептов с красивой демонстрационной карточкой пиццы -->
+                    <main class="recipe-grid" style="margin-top: 20px;">
+                        
+                        <div class="card" style="display: flex; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                            <!-- Место под картинку -->
+                            <div style="width: 150px; background: #fff5f5; display: flex; align-items: center; justify-content: center; font-size: 50px;">🍕</div>
+                            
+                            <div style="padding: 20px; flex: 1; text-align: left;">
+                                <h3 class="card-title" style="margin: 0 0 10px 0; font-size: 22px; color: #0f172a; font-family: inherit;">Итальянская Пицца Маргарита</h3>
+                                <p class="card-text" style="color: #64748b; font-size: 14px; margin: 0 0 15px 0; line-height: 1.5; font-family: inherit;">Классическое тонкое тесто, сочный томатный соус, нежная моцарелла и листики свежего базилика. Традиционный рецепт прямиком из Неаполя.</p>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: #ff6b6b;">
+                                    <span>⏱ 30 минут | ⭐ Легко</span>
+                                    <a href="detali.html" class="btn-more-link" style="text-decoration: none; color: #fff; background: #ff6b6b; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; transition: 0.3s;">Смотреть рецепт →</a>
+                                </div>
+                            </div>
+                        </div>
+
    <a href="detali.html" class="card">
 
-                            <div class="card-img-wrapper">
-                                {% if recipe.image %}
-                                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
-                                {% else %}
-                                    <img src="https://picsum.photos{{ recipe.id }}/600/400" alt="{{ recipe.title }}">
-                                {% endif %}
+                                                        <div class="card-img-wrapper" style="width: 150px; background: #fff5f5; display: flex; align-items: center; justify-content: center; font-size: 50px;">
+                                🍕
                             </div>
-                            <div class="card-content">
-                                <h3>{{ recipe.title }}</h3>
-                                <div class="card-footer">
-                                    <span class="difficulty-badge">
-                                        {% if recipe.difficulty == 'easy' %}🟢 Легко
-                                        {% elif recipe.difficulty == 'medium' %}🟡 Средне
-                                        {% elif recipe.difficulty == 'hard' %}🔴 Сложно
-                                        {% else %}{{ recipe.difficulty }}{% endif %}
-                                    </span>
+                            <div class="card-content" style="padding: 20px; flex: 1; text-align: left;">
+                                <h3 style="margin: 0 0 10px 0; font-size: 22px; color: #0f172a; font-family: inherit;">Итальянская Пицца Маргарита</h3>
+                                <p style="color: #64748b; font-size: 14px; margin: 0 0 15px 0; line-height: 1.5; font-family: inherit;">Классическое тонкое тесто, сочный томатный соус, нежная моцарелла и листики свежего базилика. Традиционный рецепт прямиком из Неаполя.</p>
+                                <div class="card-footer" style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: #ff6b6b;">
+                                    <span class="difficulty-badge">⏱ 30 минут | 🟢 Легко</span>
+
                                     <span style="font-size: 0.875rem; font-weight: 600; color: #dc2626;">Смотреть →</span>
                                 </div>
                             </div>
