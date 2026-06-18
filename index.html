@@ -3,193 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Книга рецептов — Главная</title>
+    <title>Книга рецептов</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .nav-bar { background: #ffffff; border-bottom: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* NAV */
+        .nav-bar { background: #fff; border-bottom: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
         .nav-container { max-width: 1200px; margin: 0 auto; height: 64px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
         .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; display: flex; align-items: center; gap: 8px; }
-        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; margin-left: 24px; }
-        .nav-links .fav-link { color: #dc2626; background: #fef2f2; padding: 6px 14px; border-radius: 9999px; }
-        .nav-links .add-link { color: #ffffff; background: #dc2626; padding: 6px 14px; border-radius: 9999px; }
-        .layout-table { width: 100%; max-width: 1200px; margin: 32px auto; padding: 0 20px; border-collapse: collapse; box-sizing: border-box; flex-grow: 1; }
-        .sidebar-cell { width: 240px; vertical-align: top; padding-right: 32px; }
-        .content-cell { vertical-align: top; }
-        .sidebar h2 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin: 0 0 16px 0; }
-        .category-list { list-style: none; padding: 0; margin: 0; }
-        .category-item { margin-bottom: 8px; }
-        .category-link { display: block; padding: 10px 16px; background: #ffffff; border-radius: 12px; text-decoration: none; color: #475569; font-size: 0.875rem; font-weight: 500; border: 1px solid #f1f5f9; }
+        .nav-links { display: flex; align-items: center; gap: 10px; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; padding: 6px 14px; border-radius: 9999px; }
+        .fav-link { color: #dc2626; background: #fef2f2; }
+        .add-link { color: #fff; background: #dc2626; }
+        .add-link:hover { background: #b91c1c; }
+
+        /* LAYOUT */
+        .layout { max-width: 1200px; margin: 32px auto; padding: 0 20px; display: flex; gap: 32px; flex-grow: 1; width: 100%; }
+
+        /* SIDEBAR */
+        .sidebar { width: 220px; flex-shrink: 0; }
+        .sidebar h2 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin: 0 0 14px 0; }
+        .category-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+        .category-link { display: block; padding: 10px 14px; background: #fff; border-radius: 12px; text-decoration: none; color: #475569; font-size: 0.875rem; font-weight: 500; border: 1px solid #f1f5f9; cursor: pointer; transition: all 0.15s; }
         .category-link:hover { background: #fef2f2; color: #dc2626; }
-        .category-link.active { background: #dc2626; color: #ffffff; }
-        .content-area { display: flex; flex-direction: column; gap: 24px; }
-        .search-form { display: flex; gap: 12px; background: #ffffff; padding: 8px; border-radius: 16px; border: 1px solid #e2e8f0; }
-        .search-input { flex-grow: 1; border: none; padding: 8px 16px; font-size: 0.875rem; outline: none; color: #1e293b; background: transparent; }
-        .search-button { background: #dc2626; color: #ffffff; border: none; padding: 10px 24px; font-size: 0.875rem; font-weight: 500; border-radius: 12px; cursor: pointer; }
-        .search-button:hover { background: #b91c1c; }
-        .toolbar { display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 12px 20px; border-radius: 16px; border: 1px solid #f1f5f9; }
-        .sort-select { padding: 6px 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.875rem; color: #475569; outline: none; }
-        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
-        .card { background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.02); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.2s; }
-        .card:hover { transform: translateY(-4px); }
-        .card-img-wrapper { aspect-ratio: 16/9; background: #f1f5f9; overflow: hidden; }
-        .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 16px; }
-        .card h3 { margin: 0; font-size: 1.125rem; font-weight: 700; color: #1e293b; }
+        .category-link.active { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+        /* CONTENT */
+        .content { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        .search-form { display: flex; gap: 10px; background: #fff; padding: 8px; border-radius: 16px; border: 1px solid #e2e8f0; }
+        .search-input { flex: 1; border: none; padding: 8px 14px; font-size: 0.875rem; outline: none; color: #1e293b; background: transparent; }
+        .search-btn { background: #dc2626; color: #fff; border: none; padding: 10px 22px; font-size: 0.875rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: background 0.15s; }
+        .search-btn:hover { background: #b91c1c; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px 18px; border-radius: 14px; border: 1px solid #f1f5f9; }
+        .toolbar span { font-size: 0.875rem; color: #64748b; }
+        .sort-select { padding: 6px 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.875rem; color: #475569; outline: none; cursor: pointer; }
+
+        /* GRID */
+        .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px; }
+        .card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 1px 4px rgba(0,0,0,0.04); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .card-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; background: #f1f5f9; }
+        .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .card-title { margin: 0; font-size: 1rem; font-weight: 700; color: #1e293b; line-height: 1.35; }
+        .card-desc { margin: 0; font-size: 0.8rem; color: #64748b; line-height: 1.5; flex: 1; }
         .card-footer { display: flex; justify-content: space-between; align-items: center; }
-        .difficulty-badge { font-size: 0.75rem; font-weight: 600; color: #475569; background: #f1f5f9; padding: 4px 10px; border-radius: 8px; }
-        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
-        .page-link { padding: 8px 16px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; text-decoration: none; color: #475569; font-size: 0.875rem; font-weight: 500; }
-        .page-link.active { background: #dc2626; color: #fff; border-color: #dc2626; }
-        .footer { background: #ffffff; border-top: 1px solid #e2e8f0; padding: 32px 20px; text-align: center; font-size: 0.875rem; color: #64748b; margin-top: auto; box-shadow: 0 -2px 10px rgba(0,0,0,0.02); }
-        .footer-container { max-width: 1200px; margin: 0 auto; }
-        .footer a { color: #dc2626; text-decoration: none; font-weight: 600; margin: 0 4px; }
-        .footer a:hover { text-decoration: underline; }
-        @media (max-width: 768px) { .layout-table, tr, td { display: block; width: 100% !important; } .sidebar-cell { padding-right: 0; margin-bottom: 24px; } }
+        .badge { font-size: 0.72rem; font-weight: 600; color: #475569; background: #f1f5f9; padding: 4px 9px; border-radius: 8px; }
+        .card-link { font-size: 0.8rem; font-weight: 700; color: #dc2626; }
+
+        /* DIFFICULTY COLORS */
+        .badge.easy { background: #dcfce7; color: #16a34a; }
+        .badge.medium { background: #fef9c3; color: #a16207; }
+        .badge.hard { background: #fee2e2; color: #dc2626; }
+
+        /* EMPTY */
+        .empty { grid-column: 1/-1; text-align: center; padding: 56px; color: #94a3b8; background: #fff; border-radius: 16px; font-size: 1rem; }
+
+        /* PAGINATION */
+        .pagination { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+        .page-btn { padding: 8px 15px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; color: #475569; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+        .page-btn:hover { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+        .page-btn.active { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+        /* FOOTER */
+        footer { background: #f0f9ff; border-top: 2px solid #bae6fd; padding: 24px 20px; margin-top: auto; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-copy { font-weight: 700; color: #0369a1; font-size: 0.9rem; margin-bottom: 3px; }
+        .footer-sub { font-size: 0.82rem; color: #0284c7; }
+        .footer-links { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .footer-links a { text-decoration: none; padding: 9px 16px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
+        .mail-btn { color: #0369a1; background: #fff; border: 1px solid #bae6fd; }
+        .tg-btn { color: #fff; background: #0284c7; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .layout { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .category-list { flex-direction: row; flex-wrap: wrap; }
+        }
     </style>
 </head>
 <body>
-    <nav class="nav-bar">
-        <div class="nav-container">
-<a href="index.html" class="nav-logo"><span>🍳</span> Книга рецептов</a>
-<div class="nav-links">
-    <!-- Ссылка ведет на страницу создания рецепта -->
-    <a href="recipe_form.html" class="add-link">+ Добавить рецепт</a>
-    <!-- Ссылка ведет на страницу избранного, счетчик пока оставляем статичным числом -->
-    <a href="favorites.html" class="fav-link">❤️ Избранное (3)</a>
+
+<nav class="nav-bar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-logo">🍳 Книга рецептов</a>
+        <div class="nav-links">
+            <a href="recipe_form.html" class="add-link">+ Добавить рецепт</a>
+            <a href="favorites.html" class="fav-link">❤️ Избранное</a>
+        </div>
+    </div>
+</nav>
+
+<div class="layout">
+    <aside class="sidebar">
+        <h2>Категории</h2>
+        <ul class="category-list" id="categoryList">
+            <li><span class="category-link active" data-cat="all">🍽 Все рецепты</span></li>
+            <li><span class="category-link" data-cat="pizza">🍕 Пицца и Паста</span></li>
+            <li><span class="category-link" data-cat="burger">🍔 Бургеры и Закуски</span></li>
+            <li><span class="category-link" data-cat="sushi">🍣 Суши и Роллы</span></li>
+            <li><span class="category-link" data-cat="baking">🥐 Выпечка и Десерты</span></li>
+            <li><span class="category-link" data-cat="soup">🍲 Супы и Бульоны</span></li>
+            <li><span class="category-link" data-cat="salad">🥗 Салаты</span></li>
+            <li><span class="category-link" data-cat="meat">🥩 Мясные блюда</span></li>
+            <li><span class="category-link" data-cat="seafood">🦐 Морепродукты</span></li>
+        </ul>
+    </aside>
+
+    <div class="content">
+        <div class="search-form">
+            <input type="text" id="searchInput" class="search-input" placeholder="Найдите рецепт или ингредиент...">
+            <button class="search-btn" onclick="applyFilters()">Найти</button>
+        </div>
+        <div class="toolbar">
+            <span id="countLabel">Рецептов: 0</span>
+            <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+                <option value="new">Сначала новые</option>
+                <option value="time">По времени готовки</option>
+                <option value="difficulty">По сложности</option>
+                <option value="alpha">По алфавиту</option>
+            </select>
+        </div>
+        <div class="recipe-grid" id="recipeGrid"></div>
+        <div class="pagination" id="pagination"></div>
+    </div>
 </div>
 
-            </div>
+<footer>
+    <div class="footer-inner">
+        <div>
+            <div class="footer-copy">© 2026 Разработано Кадралиевым Оятулло</div>
+            <div class="footer-sub">Проект разработан в качестве коммерческого кейса для личного портфолио</div>
         </div>
-    </nav>
-
-    <table class="layout-table">
-        <tr>
-            <td class="sidebar-cell">
-                <aside class="sidebar">
-                    <h2>Категории меню</h2>
-                    <ul class="category-list">
-                        <li class="category-item">
-                       <a href="index.html" class="category-link active">Все кулинарные шедевры</a>
-                        </li>
-                        <!-- Вручную выводим 4 самые популярные категории для демонстрации в портфолио -->
-                        <li class="category-item">
-                            <a href="index.html" class="category-link">🍕 Пицца и Паста</a>
-                        </li>
-                        <li class="category-item">
-                            <a href="index.html" class="category-link">🍔 Бургеры и Закуски</a>
-                        </li>
-                        <li class="category-item">
-                            <a href="index.html" class="category-link">🍣 Суши и Роллы</a>
-                        </li>
-                        <li class="category-item">
-                            <a href="index.html" class="category-link">🥐 Выпечка и Десерты</a>
-                        </li>
-                    </ul>
-                </aside>
-            </td>
-
-            <td class="content-cell">
-<div class="content-area">
-                    <!-- Форма поиска (ссылается на index.html) -->
-                    <form method="GET" action="index.html" class="search-form">
-                        <input type="text" name="search" class="search-input" placeholder="Найдите рецепт или ингредиент...">
-                        <button type="submit" class="search-button">Найти</button>
-                    </form>
-                    
-                    <!-- Панель инструментов (убрали Django-теги) -->
-                    <div class="toolbar">
-                        <span style="font-size: 0.875rem; color: #64748b;">Рецепты на странице: 1</span>
-                        <select class="sort-select">
-                            <option value="new" selected>Сначала новые</option>
-                            <option value="time">По времени готовки</option>
-                            <option value="difficulty">По сложности</option>
-                        </select>
-                    </div>
-
-                    <!-- Сетка рецептов с красивой демонстрационной карточкой пиццы -->
-                    <main class="recipe-grid" style="margin-top: 20px;">
-                        
-                        <div class="card" style="display: flex; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e2e8f0;">
-                            <!-- Место под картинку -->
-                            <div style="width: 150px; background: #fff5f5; display: flex; align-items: center; justify-content: center; font-size: 50px;">🍕</div>
-                            
-                            <div style="padding: 20px; flex: 1; text-align: left;">
-                                <h3 class="card-title" style="margin: 0 0 10px 0; font-size: 22px; color: #0f172a; font-family: inherit;">Итальянская Пицца Маргарита</h3>
-                                <p class="card-text" style="color: #64748b; font-size: 14px; margin: 0 0 15px 0; line-height: 1.5; font-family: inherit;">Классическое тонкое тесто, сочный томатный соус, нежная моцарелла и листики свежего базилика. Традиционный рецепт прямиком из Неаполя.</p>
-                                
-                                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: #ff6b6b;">
-                                    <span>⏱ 30 минут | ⭐ Легко</span>
-                                    <a href="detali.html" class="btn-more-link" style="text-decoration: none; color: #fff; background: #ff6b6b; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; transition: 0.3s;">Смотреть рецепт →</a>
-                                </div>
-                            </div>
-                        </div>
-
-   <a href="detali.html" class="card">
-
-                                                        <div class="card-img-wrapper" style="width: 150px; background: #fff5f5; display: flex; align-items: center; justify-content: center; font-size: 50px;">
-                                🍕
-                            </div>
-                            <div class="card-content" style="padding: 20px; flex: 1; text-align: left;">
-                                <h3 style="margin: 0 0 10px 0; font-size: 22px; color: #0f172a; font-family: inherit;">Итальянская Пицца Маргарита</h3>
-                                <p style="color: #64748b; font-size: 14px; margin: 0 0 15px 0; line-height: 1.5; font-family: inherit;">Классическое тонкое тесто, сочный томатный соус, нежная моцарелла и листики свежего базилика. Традиционный рецепт прямиком из Неаполя.</p>
-                                <div class="card-footer" style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; color: #ff6b6b;">
-                                    <span class="difficulty-badge">⏱ 30 минут | 🟢 Легко</span>
-
-                                    <span style="font-size: 0.875rem; font-weight: 600; color: #dc2626;">Смотреть →</span>
-                                </div>
-                            </div>
-                        </a>
-                        {% empty %}
-                        <div style="grid-column:1/-1; text-align:center; padding:48px; color:#94a3b8; background:#fff; border-radius:16px;">Ничего не найдено.</div>
-                        {% endfor %}
-                        {% endblock %}
-                    </main>
-
-                    <!-- ИСПРАВЛЕННЫЙ БЛОК ПАГИНАЦИИ (СТРАНИЦЫ) -->
-                    {% if recipes.has_other_pages %}
-                    <div class="pagination">
-                        {% if recipes.has_previous %}
-                            <a href="?page={{ recipes.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-link">←</a>
-                        {% endif %}
-                        
-                        {% for num in recipes.paginator.page_range %}
-                            {% if recipes.number == num %}
-                                <span class="page-link active">{{ num }}</span>
-                            {% else %}
-                                <a href="?page={{ num }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-link">{{ num }}</a>
-                            {% endif %}
-                        {% endfor %}
-
-                        {% if recipes.has_next %}
-                            <a href="?page={{ recipes.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}" class="page-link">→</a>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-                </div>
-            </td>
-        </tr>
-    </table>
-
-    <!-- НОВЫЙ АККУРАТНЫЙ ФУТЕР В ВИДЕ СТИЛЬНОГО ГОЛУБОГО ОКОШКА НА ВСЮ ШИРИНУ -->
-    <footer style="background: #f0fdf4; background-color: #f0f9ff; border-top: 2px solid #bae6fd; padding: 24px 20px; margin-top: auto; font-family: system-ui, -apple-system, sans-serif;">
-        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-            <div>
-                <div style="font-weight: 700; color: #0369a1; font-size: 0.95rem; margin-bottom: 4px;">
-                    © 2026 Разработано Кадралиевым Оятулло
-                </div>
-                <div style="font-size: 0.85rem; color: #0284c7; font-weight: 500;">
-                    Проект разработан в качестве коммерческого кейса для личного портфолио
-                </div>
-            </div>
-            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                <a href="mailto:oyatillokadraliev@gmail.com" style="color: #0369a1; background: #ffffff; border: 1px solid #bae6fd; text-decoration: none; padding: 10px 18px; border-radius: 12px; font-size: 0.875rem; font-weight: 600; box-shadow: 0 2px 4px rgba(3, 105, 161, 0.04); transition: all 0.2s;">
-                    ✉️ oyatillokadraliev@gmail.com
-                </a>
-                <a href="https://t.me" target="_blank" style="color: #ffffff; background: #0284c7; text-decoration: none; padding: 10px 20px; border-radius: 12px; font-size: 0.875rem; font-weight: 600; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2); transition: all 0.2s;">
-                    💬 Написать в Telegram
-                </a>
-            </div>
+        <div class="footer-links">
+            <a href="mailto:oyatillokadraliev@gmail.com" class="mail-btn">✉️ oyatillokadraliev@gmail.com</a>
+            <a href="https://t.me" target="_blank" class="tg-btn">💬 Написать в Telegram</a>
         </div>
-    </footer>
+    </div>
+</footer>
+
+<script>
+const RECIPES = [
+    { id:1,  title:"Итальянская Пицца Маргарита",      cat:"pizza",   time:30,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Классическое тонкое тесто, томатный соус, моцарелла и листики свежего базилика. Рецепт прямиком из Неаполя.", img:"https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?w=600&q=80" },
+    { id:2,  title:"Паста Карбонара",                   cat:"pizza",   time:25,  diff:"medium", diffLabel:"🟡 Средне", desc:"Спагетти с хрустящей панчеттой, яичным соусом и щедрой порцией пармезана. Настоящий римский рецепт.", img:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600&q=80" },
+    { id:3,  title:"Классический Чизбургер",            cat:"burger",  time:20,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Сочная котлета из говядины, расплавленный чеддер, хрустящий салат и домашний соус. Идеальный бургер.", img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" },
+    { id:4,  title:"Роллы Калифорния",                  cat:"sushi",   time:45,  diff:"medium", diffLabel:"🟡 Средне", desc:"Краб, авокадо и огурец в нежном рисе, посыпанные тобико. Популярный западный ролл.", img:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80" },
+    { id:5,  title:"Круассаны с миндальным кремом",     cat:"baking",  time:90,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Слоёное масляное тесто с хрустящей корочкой и нежной миндальной начинкой. Французская классика.", img:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&q=80" },
+    { id:6,  title:"Борщ украинский",                   cat:"soup",    time:90,  diff:"medium", diffLabel:"🟡 Средне", desc:"Густой, наваристый борщ со свёклой, капустой, говядиной и ложкой сметаны. Душа русской кухни.", img:"https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" },
+    { id:7,  title:"Греческий салат",                   cat:"salad",   time:15,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Помидоры, огурцы, маслины, перец и фета с оливковым маслом и орегано. Освежающий летний салат.", img:"https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&q=80" },
+    { id:8,  title:"Стейк Рибай на гриле",              cat:"meat",    time:20,  diff:"medium", diffLabel:"🟡 Средне", desc:"Мраморная говядина прожарки medium rare с тимьяновым маслом и морской солью.", img:"https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" },
+    { id:9,  title:"Паэлья с морепродуктами",           cat:"seafood", time:60,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Испанский рис с креветками, мидиями, кальмарами и шафраном. Праздничное блюдо.", img:"https://images.unsplash.com/photo-1534080564583-6be75777b70a?w=600&q=80" },
+    { id:10, title:"Том Ям с креветками",               cat:"soup",    time:35,  diff:"medium", diffLabel:"🟡 Средне", desc:"Остро-кислый тайский суп с кокосовым молоком, лемонграссом и тигровыми креветками.", img:"https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80" },
+    { id:11, title:"Тирамису",                           cat:"baking",  time:30,  diff:"medium", diffLabel:"🟡 Средне", desc:"Итальянский десерт из савоярди, пропитанных эспрессо, с кремом маскарпоне и какао.", img:"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&q=80" },
+    { id:12, title:"Суши нигири с лососем",             cat:"sushi",   time:40,  diff:"medium", diffLabel:"🟡 Средне", desc:"Классические нигири с нежным лососем, свежим васаби и японским рисом с уксусом.", img:"https://images.unsplash.com/photo-1553621042-f6e147245754?w=600&q=80" },
+    { id:13, title:"Пицца Пепперони",                   cat:"pizza",   time:35,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Пышное тесто, острое пепперони, томатный соус и тянущаяся моцарелла. Любимица всей семьи.", img:"https://images.unsplash.com/photo-1628840042765-356cda07504e?w=600&q=80" },
+    { id:14, title:"Французский луковый суп",           cat:"soup",    time:60,  diff:"medium", diffLabel:"🟡 Средне", desc:"Карамелизированный лук в говяжьем бульоне под шапкой из грюйера на хрустящем хлебе.", img:"https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80" },
+    { id:15, title:"Цезарь с курицей",                  cat:"salad",   time:20,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Хрустящий романо, сочная куриная грудка, крутоны и классический соус с анчоусами.", img:"https://images.unsplash.com/photo-1546793665-c74683f339c1?w=600&q=80" },
+    { id:16, title:"Утка по-пекински",                  cat:"meat",    time:180, diff:"hard",   diffLabel:"🔴 Сложно", desc:"Хрустящая карамелизированная утиная кожа с мандариновыми блинчиками и соусом хойсин.", img:"https://images.unsplash.com/photo-1518492104633-130d0cc84637?w=600&q=80" },
+    { id:17, title:"Гаспачо",                            cat:"soup",    time:20,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Холодный испанский суп из свежих томатов, перца, огурцов и оливкового масла. Освежает в жару.", img:"https://images.unsplash.com/photo-1615484477778-ca3b77940c25?w=600&q=80" },
+    { id:18, title:"Тако с говядиной",                  cat:"burger",  time:25,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Хрустящие кукурузные лепёшки с пряной говядиной, сальсой, гуакамоле и сметаной.", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80" },
+    { id:19, title:"Шоколадный фондан",                 cat:"baking",  time:25,  diff:"medium", diffLabel:"🟡 Средне", desc:"Тёплый шоколадный кекс с жидкой начинкой, поданный с шариком ванильного мороженого.", img:"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&q=80" },
+    { id:20, title:"Жареные креветки в чесночном масле",cat:"seafood", time:15,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Тигровые креветки, обжаренные в ароматном чесночном масле с петрушкой и лимонным соком.", img:"https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=600&q=80" },
+    { id:21, title:"Лазанья Болоньезе",                 cat:"pizza",   time:90,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Слои свежей пасты с мясным рагу болоньезе, соусом бешамель и запечённым пармезаном.", img:"https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=600&q=80" },
+    { id:22, title:"Фалафель в питте",                  cat:"burger",  time:30,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Хрустящие нутовые шарики в питте с хумусом, свежими овощами и соусом тахини.", img:"https://images.unsplash.com/photo-1593001872095-7d5b3868fb1d?w=600&q=80" },
+    { id:23, title:"Ролл Дракон",                       cat:"sushi",   time:50,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Угорь внутри, авокадо снаружи с острым майонезом и соусом унаги. Шедевр японской кухни.", img:"https://images.unsplash.com/photo-1617196034099-5b04f4f96860?w=600&q=80" },
+    { id:24, title:"Тарт Татен",                        cat:"baking",  time:55,  diff:"medium", diffLabel:"🟡 Средне", desc:"Перевёрнутый яблочный пирог с карамелью на слоёном тесте. Классика французской патиссерии.", img:"https://images.unsplash.com/photo-1621743478914-cc8a86d7e7b5?w=600&q=80" },
+    { id:25, title:"Осьминог на гриле",                 cat:"seafood", time:75,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Нежный осьминог, маринованный с лимоном и травами, поджаренный до хрустящих краёв.", img:"https://images.unsplash.com/photo-1625944525033-91e83b0e2e4e?w=600&q=80" },
+];
+
+const PER_PAGE = 9;
+let currentCat = "all";
+let currentPage = 1;
+let filtered = [...RECIPES];
+
+function applyFilters() {
+    const q = document.getElementById("searchInput").value.toLowerCase().trim();
+    const sort = document.getElementById("sortSelect").value;
+    filtered = RECIPES.filter(r => {
+        const matchCat = currentCat === "all" || r.cat === currentCat;
+        const matchQ = !q || r.title.toLowerCase().includes(q) || r.desc.toLowerCase().includes(q);
+        return matchCat && matchQ;
+    });
+    if (sort === "time") filtered.sort((a,b) => a.time - b.time);
+    else if (sort === "difficulty") { const o = {easy:0, medium:1, hard:2}; filtered.sort((a,b) => o[a.diff]-o[b.diff]); }
+    else if (sort === "alpha") filtered.sort((a,b) => a.title.localeCompare(b.title,"ru"));
+    currentPage = 1;
+    render();
+}
+
+function render() {
+    const grid = document.getElementById("recipeGrid");
+    const pag = document.getElementById("pagination");
+    const total = filtered.length;
+    const pages = Math.ceil(total / PER_PAGE);
+    const start = (currentPage-1)*PER_PAGE;
+    const slice = filtered.slice(start, start+PER_PAGE);
+
+    document.getElementById("countLabel").textContent = `Рецептов: ${total}`;
+
+    if (!slice.length) {
+        grid.innerHTML = `<div class="empty">😔 Ничего не найдено. Попробуйте изменить поиск.</div>`;
+        pag.innerHTML = "";
+        return;
+    }
+
+    grid.innerHTML = slice.map(r => `
+        <a class="card" href="detali.html?id=${r.id}">
+            <img class="card-img" src="${r.img}" alt="${r.title}" loading="lazy">
+            <div class="card-body">
+                <h3 class="card-title">${r.title}</h3>
+                <p class="card-desc">${r.desc}</p>
+                <div class="card-footer">
+                    <span class="badge ${r.diff}">⏱ ${r.time} мин &nbsp;${r.diffLabel}</span>
+                    <span class="card-link">Смотреть →</span>
+                </div>
+            </div>
+        </a>
+    `).join("");
+
+    // Pagination
+    let pagHTML = "";
+    if (pages > 1) {
+        if (currentPage > 1) pagHTML += `<button class="page-btn" onclick="goPage(${currentPage-1})">←</button>`;
+        for (let i=1; i<=pages; i++) {
+            pagHTML += `<button class="page-btn${i===currentPage?" active":""}" onclick="goPage(${i})">${i}</button>`;
+        }
+        if (currentPage < pages) pagHTML += `<button class="page-btn" onclick="goPage(${currentPage+1})">→</button>`;
+    }
+    pag.innerHTML = pagHTML;
+}
+
+function goPage(n) {
+    currentPage = n;
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Category click
+document.getElementById("categoryList").addEventListener("click", e => {
+    const link = e.target.closest(".category-link");
+    if (!link) return;
+    document.querySelectorAll(".category-link").forEach(el => el.classList.remove("active"));
+    link.classList.add("active");
+    currentCat = link.dataset.cat;
+    applyFilters();
+});
+
+// Search on Enter
+document.getElementById("searchInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") applyFilters();
+});
+
+// Init
+applyFilters();
+</script>
 </body>
 </html>
