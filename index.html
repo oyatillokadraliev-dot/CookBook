@@ -90,7 +90,7 @@
         <a href="index.html" class="nav-logo">🍳 Книга рецептов</a>
         <div class="nav-links">
             <a href="recipe_form.html" class="add-link">+ Добавить рецепт</a>
-            <a href="favorites.html" class="fav-link">❤️ Избранное</a>
+            <a href="favorites.html" class="fav-link">❤️ Избранное <span id="favCountNav"></span></a>
         </div>
     </div>
 </nav>
@@ -255,7 +255,22 @@ document.getElementById("searchInput").addEventListener("keydown", e => {
     if (e.key === "Enter") applyFilters();
 });
 
-// Init
+// Load custom recipes from localStorage and merge
+function loadCustomRecipes() {
+    try {
+        const customs = JSON.parse(localStorage.getItem("customRecipes")||"[]");
+        customs.forEach(r => {
+            if (!RECIPES.find(x => x.id === r.id)) RECIPES.unshift(r);
+        });
+    } catch(e) {}
+}
+
+loadCustomRecipes();
+// Show fav count in nav
+try {
+    const fc = JSON.parse(localStorage.getItem("favs")||"[]").length;
+    if (fc) document.getElementById("favCountNav").textContent = `(${fc})`;
+} catch(e){}
 applyFilters();
 </script>
 </body>
