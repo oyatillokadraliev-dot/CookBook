@@ -5,59 +5,308 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Добавить рецепт — Книга рецептов</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .nav-bar { background: #ffffff; border-b: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .nav-container { max-width: 600px; margin: 0 auto; height: 64px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; }
-        .container { max-width: 600px; margin: 40px auto; padding: 0 20px; box-sizing: border-box; flex-grow: 1; width: 100%; }
-        .form-card { background: #ffffff; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 10px 25px rgba(0,0,0,0.03); padding: 40px; }
-        h1 { margin: 0 0 28px 0; font-size: 1.75rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
-        .form-group { margin-bottom: 24px; display: flex; flex-direction: column; gap: 8px; }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+
+        .nav-bar { background: #fff; border-bottom: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
+        .nav-container { max-width: 1200px; margin: 0 auto; height: 64px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; align-items: center; gap: 10px; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; padding: 6px 14px; border-radius: 9999px; }
+        .fav-link { color: #dc2626; background: #fef2f2; }
+
+        .container { max-width: 680px; margin: 40px auto; padding: 0 20px; flex-grow: 1; width: 100%; }
+
+        .form-card { background: #fff; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 10px 25px rgba(0,0,0,0.04); padding: 40px; }
+        h1 { margin: 0 0 32px 0; font-size: 1.75rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 10px; }
+
+        .form-group { margin-bottom: 22px; display: flex; flex-direction: column; gap: 7px; }
         label { font-size: 0.875rem; font-weight: 600; color: #475569; }
-        .form-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; font-size: 0.9375rem; outline: none; box-sizing: border-box; font-family: inherit; color: #1e293b; background: #ffffff; transition: border-color 0.2s, box-shadow 0.2s; }
+        .form-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px 16px; font-size: 0.9375rem; outline: none; font-family: inherit; color: #1e293b; background: #fff; transition: border-color 0.2s, box-shadow 0.2s; }
         .form-input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
-        .form-file { font-size: 0.875rem; color: #64748b; padding: 8px 0; }
-        .btn-submit { background: #dc2626; color: #ffffff; border: none; width: 100%; padding: 14px; font-size: 1rem; font-weight: 600; border-radius: 12px; cursor: pointer; margin-top: 16px; transition: background 0.2s; }
+        textarea.form-input { resize: vertical; min-height: 100px; }
+        select.form-input { cursor: pointer; }
+
+        /* Dynamic ingredient/step rows */
+        .dynamic-section { border: 1px solid #f1f5f9; border-radius: 16px; padding: 20px; background: #fafafa; }
+        .dynamic-section h3 { margin: 0 0 14px 0; font-size: 0.875rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+        .row-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .row-item input { flex: 1; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 0.875rem; font-family: inherit; outline: none; color: #1e293b; }
+        .row-item input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.07); }
+        .row-item .amount-input { flex: 0 0 120px; }
+        .remove-row { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 1.1rem; padding: 4px 8px; border-radius: 8px; transition: color 0.15s; }
+        .remove-row:hover { color: #dc2626; background: #fef2f2; }
+        .add-row-btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; background: none; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; color: #64748b; cursor: pointer; transition: all 0.15s; }
+        .add-row-btn:hover { border-color: #dc2626; color: #dc2626; background: #fef2f2; }
+
+        /* Image preview */
+        .img-label { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #cbd5e1; border-radius: 16px; padding: 32px; cursor: pointer; transition: all 0.2s; text-align: center; gap: 8px; }
+        .img-label:hover { border-color: #dc2626; background: #fef2f2; }
+        .img-label span { font-size: 2rem; }
+        .img-label p { margin: 0; font-size: 0.875rem; color: #64748b; font-weight: 500; }
+        .img-label small { color: #94a3b8; font-size: 0.75rem; }
+        #imgPreview { max-width: 100%; border-radius: 12px; margin-top: 12px; display: none; }
+        #imageInput { display: none; }
+
+        /* Note */
+        .info-note { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 14px 18px; font-size: 0.85rem; color: #1d4ed8; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 24px; }
+
+        /* Submit */
+        .btn-submit { background: #dc2626; color: #fff; border: none; width: 100%; padding: 15px; font-size: 1rem; font-weight: 700; border-radius: 14px; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
         .btn-submit:hover { background: #b91c1c; }
-        .back-link { display: block; text-align: center; margin-top: 16px; font-size: 0.875rem; color: #94a3b8; text-decoration: none; font-weight: 500; }
-        .back-link:hover { color: #64748b; }
-        .footer { background: #ffffff; border-top: 1px solid #e2e8f0; padding: 32px 20px; text-align: center; font-size: 0.875rem; color: #64748b; margin-top: auto; }
-        .footer a { color: #dc2626; text-decoration: none; font-weight: 600; margin: 0 4px; }
+        .back-link { display: block; text-align: center; margin-top: 14px; font-size: 0.875rem; color: #94a3b8; text-decoration: none; font-weight: 500; }
+        .back-link:hover { color: #475569; }
+
+        /* Success modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: #fff; border-radius: 24px; padding: 40px; max-width: 420px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .modal .icon { font-size: 3rem; margin-bottom: 12px; }
+        .modal h2 { margin: 0 0 8px 0; font-size: 1.4rem; color: #0f172a; }
+        .modal p { color: #64748b; font-size: 0.9rem; margin: 0 0 24px 0; }
+        .modal a { display: inline-block; background: #dc2626; color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 12px; font-weight: 700; }
+
+        footer { background: #f0f9ff; border-top: 2px solid #bae6fd; padding: 24px 20px; margin-top: auto; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-copy { font-weight: 700; color: #0369a1; font-size: 0.9rem; margin-bottom: 3px; }
+        .footer-sub { font-size: 0.82rem; color: #0284c7; }
+        .footer-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .footer-links a { text-decoration: none; padding: 9px 16px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
+        .mail-btn { color: #0369a1; background: #fff; border: 1px solid #bae6fd; }
+        .tg-btn { color: #fff; background: #0284c7; }
     </style>
 </head>
 <body>
-    <nav class="nav-bar">
-        <div class="nav-container">
-            <a href="{% url 'recipe_list' %}" class="nav-logo">🍳 Книга рецептов</a>
-            <a href="{% url 'favorites_list' %}" style="text-decoration:none; color:#dc2626; font-size:14px; font-weight:500;">❤️ Избранное ({{ fav_count }})</a>
-        </div>
-    </nav>
-    
-    <div class="container">
-        <div class="form-card">
-            <h1>✨ Новый рецепт</h1>
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                
-                {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <span style="color: #ef4444; font-size: 12px; font-weight: 500;">{{ field.errors.0 }}</span>
-                    {% endif %}
-                </div>
-                {% endfor %}
-                
-                <button type="submit" class="btn-submit">Опубликовать в книгу</button>
-            </form>
-            <a href="{% url 'recipe_list' %}" class="back-link">Отмена и возврат</a>
+
+<nav class="nav-bar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-logo">🍳 Книга рецептов</a>
+        <div class="nav-links">
+            <a href="index.html" style="color:#475569;">← Главная</a>
+            <a href="favorites.html" class="fav-link">❤️ Избранное</a>
         </div>
     </div>
+</nav>
 
-    <footer class="footer">
-        <div style="font-weight: 600; color: #1e293b; margin-bottom: 6px;">© 2026 Разработано Кадралиевым Оятулло в качестве коммерческого кейса.</div>
-        <div>Связаться со мной: <a href="mailto:oyatillokadraliev@gmail.com">oyatillokadraliev@gmail.com</a> | Telegram: <a href="https://t.me" target="_blank">@kadraliev_007</a></div>
-    </footer>
+<div class="container">
+    <div class="form-card">
+        <h1>✨ Новый рецепт</h1>
+
+        <div class="info-note">
+            ℹ️ Рецепт сохраняется локально в вашем браузере и сразу появится в общем списке на главной странице.
+        </div>
+
+        <!-- Title -->
+        <div class="form-group">
+            <label for="title">Название рецепта *</label>
+            <input id="title" class="form-input" type="text" placeholder="Например: Домашняя пицца Маргарита" maxlength="100">
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+            <label for="category">Категория *</label>
+            <select id="category" class="form-input">
+                <option value="">— Выберите категорию —</option>
+                <option value="pizza">🍕 Пицца и Паста</option>
+                <option value="burger">🍔 Бургеры и Закуски</option>
+                <option value="sushi">🍣 Суши и Роллы</option>
+                <option value="baking">🥐 Выпечка и Десерты</option>
+                <option value="soup">🍲 Супы и Бульоны</option>
+                <option value="salad">🥗 Салаты</option>
+                <option value="meat">🥩 Мясные блюда</option>
+                <option value="seafood">🦐 Морепродукты</option>
+            </select>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            <label for="desc">Краткое описание *</label>
+            <textarea id="desc" class="form-input" placeholder="Расскажите об этом блюде в 1–2 предложениях..." rows="3"></textarea>
+        </div>
+
+        <!-- Time & Difficulty -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="form-group">
+                <label for="time">Время приготовления (мин) *</label>
+                <input id="time" class="form-input" type="number" min="1" max="999" placeholder="30">
+            </div>
+            <div class="form-group">
+                <label for="difficulty">Сложность *</label>
+                <select id="difficulty" class="form-input">
+                    <option value="">— Выбрать —</option>
+                    <option value="easy">🟢 Легко</option>
+                    <option value="medium">🟡 Средне</option>
+                    <option value="hard">🔴 Сложно</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Image -->
+        <div class="form-group">
+            <label>Фотография блюда</label>
+            <label class="img-label" for="imageInput">
+                <span>📷</span>
+                <p>Нажмите для загрузки фото</p>
+                <small>JPG, PNG, WebP — до 5 МБ</small>
+            </label>
+            <input type="file" id="imageInput" accept="image/*">
+            <img id="imgPreview" alt="Предпросмотр">
+        </div>
+
+        <!-- Ingredients -->
+        <div class="form-group">
+            <label>Ингредиенты *</label>
+            <div class="dynamic-section">
+                <h3>Список ингредиентов</h3>
+                <div id="ingredientRows"></div>
+                <button type="button" class="add-row-btn" onclick="addIngredient()">+ Добавить ингредиент</button>
+            </div>
+        </div>
+
+        <!-- Steps -->
+        <div class="form-group">
+            <label>Шаги приготовления *</label>
+            <div class="dynamic-section">
+                <h3>Пошаговый рецепт</h3>
+                <div id="stepRows"></div>
+                <button type="button" class="add-row-btn" onclick="addStep()">+ Добавить шаг</button>
+            </div>
+        </div>
+
+        <button class="btn-submit" onclick="submitForm()">Опубликовать рецепт 🎉</button>
+        <a href="index.html" class="back-link">Отмена и возврат</a>
+    </div>
+</div>
+
+<!-- Success modal -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal">
+        <div class="icon">🎉</div>
+        <h2>Рецепт добавлен!</h2>
+        <p>Ваш рецепт сохранён и теперь отображается на главной странице.</p>
+        <a href="index.html">Перейти к рецептам</a>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-inner">
+        <div>
+            <div class="footer-copy">© 2026 Разработано Кадралиевым Оятулло</div>
+            <div class="footer-sub">Проект разработан в качестве коммерческого кейса для личного портфолио</div>
+        </div>
+        <div class="footer-links">
+            <a href="mailto:oyatillokadraliev@gmail.com" class="mail-btn">✉️ oyatillokadraliev@gmail.com</a>
+            <a href="https://t.me" target="_blank" class="tg-btn">💬 Написать в Telegram</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+// --- Image preview ---
+document.getElementById("imageInput").addEventListener("change", function() {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const prev = document.getElementById("imgPreview");
+        prev.src = e.target.result;
+        prev.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+});
+
+// --- Ingredients ---
+let ingCount = 0;
+function addIngredient(name="", amount="") {
+    ingCount++;
+    const id = ingCount;
+    const div = document.createElement("div");
+    div.className = "row-item";
+    div.id = `ing-${id}`;
+    div.innerHTML = `
+        <input type="text" placeholder="Название (напр. Мука)" value="${name}" class="ing-name">
+        <input type="text" placeholder="Кол-во (напр. 300 г)" value="${amount}" class="amount-input ing-amount">
+        <button type="button" class="remove-row" onclick="removeRow('ing-${id}')" title="Удалить">✕</button>
+    `;
+    document.getElementById("ingredientRows").appendChild(div);
+}
+
+// --- Steps ---
+let stepCount = 0;
+function addStep(text="") {
+    stepCount++;
+    const id = stepCount;
+    const div = document.createElement("div");
+    div.className = "row-item";
+    div.id = `step-${id}`;
+    div.innerHTML = `
+        <input type="text" placeholder="Шаг ${id}: опишите действие..." value="${text}" style="flex:1;">
+        <button type="button" class="remove-row" onclick="removeRow('step-${id}')" title="Удалить">✕</button>
+    `;
+    document.getElementById("stepRows").appendChild(div);
+}
+
+function removeRow(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+}
+
+// --- Init with 3 rows ---
+addIngredient(); addIngredient(); addIngredient();
+addStep(); addStep(); addStep();
+
+// --- Validate & Save ---
+function submitForm() {
+    const title = document.getElementById("title").value.trim();
+    const category = document.getElementById("category").value;
+    const desc = document.getElementById("desc").value.trim();
+    const time = parseInt(document.getElementById("time").value);
+    const diff = document.getElementById("difficulty").value;
+
+    if (!title) { alert("Введите название рецепта"); return; }
+    if (!category) { alert("Выберите категорию"); return; }
+    if (!desc) { alert("Добавьте описание"); return; }
+    if (!time || time < 1) { alert("Укажите время приготовления"); return; }
+    if (!diff) { alert("Выберите сложность"); return; }
+
+    // Collect ingredients
+    const ingredients = [];
+    document.querySelectorAll("#ingredientRows .row-item").forEach(row => {
+        const n = row.querySelector(".ing-name").value.trim();
+        const a = row.querySelector(".ing-amount").value.trim();
+        if (n) ingredients.push({ n, a: a||"—" });
+    });
+    if (ingredients.length < 1) { alert("Добавьте хотя бы один ингредиент"); return; }
+
+    // Collect steps
+    const steps = [];
+    document.querySelectorAll("#stepRows .row-item input[type=text]").forEach(inp => {
+        const s = inp.value.trim();
+        if (s) steps.push(s);
+    });
+    if (steps.length < 1) { alert("Добавьте хотя бы один шаг приготовления"); return; }
+
+    // Image
+    const imgSrc = document.getElementById("imgPreview").src || "";
+
+    const diffMap = { easy:"🟢 Легко", medium:"🟡 Средне", hard:"🔴 Сложно" };
+
+    // Load existing custom recipes
+    const customs = JSON.parse(localStorage.getItem("customRecipes")||"[]");
+    const newId = Date.now(); // unique id
+    customs.unshift({
+        id: newId,
+        title, cat: category, time, diff,
+        diffLabel: diffMap[diff],
+        desc,
+        img: imgSrc || `https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80`,
+        ingredients, steps,
+        custom: true
+    });
+    localStorage.setItem("customRecipes", JSON.stringify(customs));
+
+    document.getElementById("successModal").classList.add("show");
+}
+</script>
 </body>
 </html>
