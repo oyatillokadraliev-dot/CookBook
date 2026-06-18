@@ -3,110 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ recipe.title }} — Книга рецептов</title>
+    <title>Рецепт — Книга рецептов</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .nav-bar { background: #ffffff; border-b: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .nav-container { max-width: 896px; margin: 0 auto; height: 64px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; }
-        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; margin-left: 24px; color: #64748b; }
-        .nav-links .fav-link { color: #dc2626; }
-        .container { max-width: 896px; margin: 32px auto; padding: 0 20px; box-sizing: border-box; flex-grow: 1; }
-        .wrapper { background: #ffffff; border-radius: 24px; border: 1px solid #f1f5f9; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); padding: 40px; margin-bottom: 32px; }
-        .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.875rem; font-weight: 500; color: #94a3b8; text-decoration: none; margin-bottom: 24px; }
-        .back-link:hover { color: #dc2626; }
-        .title-area { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
-        h1 { margin: 0; font-size: 2.25rem; font-weight: 800; color: #0f172a; tracking: -0.025em; }
-        .fav-btn { text-decoration: none; font-size: 0.875rem; font-weight: 600; color: #dc2626; background: #fef2f2; padding: 10px 20px; border-radius: 12px; }
-        .meta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
-        .badge { font-size: 0.75rem; font-weight: 600; padding: 6px 14px; border-radius: 9999px; }
-        .b-slate { background: #f1f5f9; color: #475569; }
-        .b-indigo { background: #fef2f2; color: #b91c1c; }
-        .b-amber { background: #fef3c7; color: #b45309; }
-        .main-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 16px; margin-bottom: 32px; }
-        .grid-layout { display: grid; grid-template-columns: 1fr; gap: 32px; }
-        @media (min-width: 768px) { .grid-layout { grid-template-columns: 1fr 2fr; } }
-        .ingredients-card { background: #f8fafc; padding: 24px; border-radius: 16px; border: 1px solid #f1f5f9; }
-        h2 { margin: 0 0 16px 0; font-size: 1.125rem; font-weight: 700; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; }
-        .text-block { font-size: 0.9375rem; line-height: 1.7; color: #475569; }
-        .text-block p { margin: 0 0 12px 0; }
-        .similar-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 16px; }
-        .similar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; margin-bottom: 32px; }
-        .similar-card { background: #fff; border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; display: block; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.2s; }
-        .similar-card:hover { transform: translateY(-2px); }
-        .similar-card img { width: 100%; height: 140px; object-fit: cover; display: block; }
-        .similar-body { padding: 12px; }
-        .similar-body h4 { margin: 0; font-size: 1rem; font-weight: 700; color: #0f172a; }
-        .footer { background: #ffffff; border-top: 1px solid #f1f5f9; padding: 24px 20px; text-align: center; font-size: 0.875rem; color: #64748b; width: 100%; box-sizing: border-box; }
-        .footer a { color: #dc2626; text-decoration: none; font-weight: 500; }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+
+        .nav-bar { background: #fff; border-bottom: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
+        .nav-container { max-width: 1200px; margin: 0 auto; height: 64px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; align-items: center; gap: 10px; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; padding: 6px 14px; border-radius: 9999px; }
+        .fav-link { color: #dc2626; background: #fef2f2; }
+        .add-link { color: #fff; background: #dc2626; }
+
+        .back-link { max-width: 1200px; margin: 24px auto 0; padding: 0 20px; display: block; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #475569; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; transition: all 0.15s; }
+        .back-btn:hover { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+
+        .detail-wrap { max-width: 1200px; margin: 20px auto 40px; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+
+        /* HERO */
+        .hero-img { width: 100%; border-radius: 20px; aspect-ratio: 4/3; object-fit: cover; display: block; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .hero-side { display: flex; flex-direction: column; gap: 20px; }
+        .recipe-title { margin: 0; font-size: 2rem; font-weight: 800; color: #0f172a; line-height: 1.2; }
+        .recipe-desc { font-size: 1rem; color: #64748b; line-height: 1.7; margin: 0; }
+
+        /* STATS CHIPS */
+        .stats { display: flex; flex-wrap: wrap; gap: 10px; }
+        .stat-chip { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 0.875rem; font-weight: 600; color: #334155; }
+        .stat-chip.easy { background: #dcfce7; border-color: #bbf7d0; color: #15803d; }
+        .stat-chip.medium { background: #fef9c3; border-color: #fde68a; color: #92400e; }
+        .stat-chip.hard { background: #fee2e2; border-color: #fecaca; color: #dc2626; }
+
+        /* FAV BUTTON */
+        .fav-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: #fff; border: 2px solid #dc2626; border-radius: 12px; color: #dc2626; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+        .fav-btn:hover, .fav-btn.active { background: #dc2626; color: #fff; }
+
+        /* FULL WIDTH SECTION */
+        .full-section { max-width: 1200px; margin: 0 auto 40px; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+
+        .section-card { background: #fff; border-radius: 20px; padding: 28px; border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .section-card h2 { margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+
+        /* INGREDIENTS */
+        .ingredient-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+        .ingredient-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f8fafc; border-radius: 10px; font-size: 0.9rem; }
+        .ingredient-name { font-weight: 500; color: #334155; }
+        .ingredient-amount { font-weight: 700; color: #dc2626; }
+
+        /* STEPS */
+        .step-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+        .step-item { display: flex; gap: 14px; align-items: flex-start; }
+        .step-num { width: 32px; height: 32px; background: #dc2626; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; flex-shrink: 0; margin-top: 2px; }
+        .step-text { font-size: 0.9rem; color: #475569; line-height: 1.6; padding-top: 4px; }
+
+        /* SIMILAR */
+        .similar-section { max-width: 1200px; margin: 0 auto 48px; padding: 0 20px; }
+        .similar-section h2 { font-size: 1.3rem; font-weight: 800; color: #0f172a; margin: 0 0 20px 0; }
+        .similar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+        .mini-card { background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid #f1f5f9; text-decoration: none; color: inherit; transition: transform 0.2s; }
+        .mini-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+        .mini-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+        .mini-card-body { padding: 12px 14px; }
+        .mini-card-title { font-size: 0.875rem; font-weight: 700; color: #1e293b; margin: 0 0 4px 0; }
+        .mini-card-meta { font-size: 0.75rem; color: #94a3b8; }
+
+        /* 404 */
+        .not-found { text-align: center; padding: 80px 20px; color: #94a3b8; }
+        .not-found h2 { font-size: 2rem; color: #334155; }
+
+        footer { background: #f0f9ff; border-top: 2px solid #bae6fd; padding: 24px 20px; margin-top: auto; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-copy { font-weight: 700; color: #0369a1; font-size: 0.9rem; margin-bottom: 3px; }
+        .footer-sub { font-size: 0.82rem; color: #0284c7; }
+        .footer-links { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .footer-links a { text-decoration: none; padding: 9px 16px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
+        .mail-btn { color: #0369a1; background: #fff; border: 1px solid #bae6fd; }
+        .tg-btn { color: #fff; background: #0284c7; }
+
+        @media (max-width: 768px) {
+            .detail-wrap, .full-section { grid-template-columns: 1fr; gap: 20px; }
+            .recipe-title { font-size: 1.5rem; }
+        }
     </style>
 </head>
 <body>
-    <nav class="nav-bar">
-        <div class="nav-container">
-            <a href="{% url 'recipe_list' %}" class="nav-logo">🍳 Книга рецептов</a>
-            <div class="nav-links">
-                <a href="{% url 'recipe_list' %}">Главная</a>
-                <a href="{% url 'favorites_list' %}" class="fav-link">❤️ Избранное ({{ fav_count }})</a>
-            </div>
+
+<nav class="nav-bar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-logo">🍳 Книга рецептов</a>
+        <div class="nav-links">
+            <a href="recipe_form.html" class="add-link">+ Добавить рецепт</a>
+            <a href="favorites.html" class="fav-link">❤️ Избранное</a>
         </div>
-    </nav>
-    <div class="container">
-        <div class="wrapper">
-            <a href="{% url 'recipe_list' %}" class="back-link">← Вернуться к поиску</a>
-            <div class="title-area">
-                <h1>{{ recipe.title }}</h1>
-                <a href="{% url 'toggle_favorite' recipe.pk %}" class="fav-btn">
-                    {% if recipe.pk in request.session.favorites %}❤️ В избранном{% else %}🤍 В избранное{% endif %}
-                </a>
-            </div>
-            <div class="meta">
-                <span class="badge b-slate">Сложность: 
-                    {% if recipe.difficulty == 'easy' %}Легко
-                    {% elif recipe.difficulty == 'medium' %}Средне
-                    {% elif recipe.difficulty == 'hard' %}Сложно
-                    {% else %}{{ recipe.difficulty }}{% endif %}
-                </span>
-                {% if recipe.category %}<span class="badge b-indigo">Категория: {{ recipe.category.name }}</span>{% endif %}
-                {% if recipe.time_minutes %}<span class="badge b-amber">⏱ {{ recipe.time_minutes }} мин.</span>{% endif %}
-            </div>
-            {% if recipe.image %}
-                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="main-img">
-            {% else %}
-                <img src="https://picsum.photos{{ recipe.id }}/600/400" alt="{{ recipe.title }}" class="main-img">
-            {% endif %}
-            <div class="grid-layout">
-                <div class="ingredients-card">
-                    <h2>Ингредиенты</h2>
-                    <div class="text-block">{{ recipe.ingredients|linebreaks }}</div>
-                </div>
-                <div>
-                    <h2>Процесс приготовления</h2>
-                    <div class="text-block" style="font-size:1rem; color:#334155;">{{ recipe.description|linebreaks }}</div>
-                </div>
-            </div>
-        </div>
-        {% if similar_recipes %}
-        <h3 class="similar-title">Похожие кулинарные шедевры</h3>
-        <div class="similar-grid">
-            {% for sim in similar_recipes %}
-            <a href="{% url 'recipe_detail' sim.pk %}" class="similar-card">
-                {% if sim.image %}
-                    <img src="{{ sim.image.url }}" alt="">
-                {% else %}
-                    <img src="https://picsum.photos{{ sim.id }}/600/400" alt="">
-                {% endif %}
-                <div class="similar-body">
-                    <h4>{{ sim.title }}</h4>
-                </div>
-            </a>
-            {% endfor %}
-        </div>
-        {% endif %}
     </div>
-    <footer class="footer">
-        <div>© 2026 Разработано Кадралиевым Оятулло в качестве коммерческого кейса.</div>
-        <div style="margin-top: 8px;">Связаться со мной: <a href="mailto:oyatillokadraliev@gmail.com">oyatillokadraliev@gmail.com</a> | Telegram: <a href="https://t.me" target="_blank">@kadraliev_007</a></div>
-    </footer>
+</nav>
+
+<div class="back-link">
+    <a href="index.html" class="back-btn">← Все рецепты</a>
+</div>
+
+<div id="pageContent"></div>
+
+<footer>
+    <div class="footer-inner">
+        <div>
+            <div class="footer-copy">© 2026 Разработано Кадралиевым Оятулло</div>
+            <div class="footer-sub">Проект разработан в качестве коммерческого кейса для личного портфолио</div>
+        </div>
+        <div class="footer-links">
+            <a href="mailto:oyatillokadraliev@gmail.com" class="mail-btn">✉️ oyatillokadraliev@gmail.com</a>
+            <a href="https://t.me" target="_blank" class="tg-btn">💬 Написать в Telegram</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+const RECIPES = [
+    { id:1,  title:"Итальянская Пицца Маргарита",      cat:"pizza",   time:30,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Классическое тонкое тесто, томатный соус, моцарелла и листики свежего базилика. Рецепт прямиком из Неаполя.", img:"https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?w=800&q=80",
+      ingredients:[{n:"Мука (тип 00)",a:"300 г"},{n:"Вода тёплая",a:"180 мл"},{n:"Дрожжи сухие",a:"7 г"},{n:"Оливковое масло",a:"2 ст.л."},{n:"Соль",a:"1 ч.л."},{n:"Томатный соус",a:"150 г"},{n:"Моцарелла",a:"200 г"},{n:"Базилик свежий",a:"10 листиков"}],
+      steps:["Смешайте муку, соль, дрожжи. Добавьте воду и масло, замесите тесто 10 минут.","Оставьте тесто под полотенцем на 1 час до увеличения вдвое.","Разогрейте духовку до 250°C с камнем или перевёрнутым противнем.","Раскатайте тесто в тонкий круг, выложите на пергамент.","Намажьте томатный соус, разложите кусочки моцареллы.","Выпекайте 10–12 минут до золотистой корочки. Добавьте базилик."]},
+
+    { id:2,  title:"Паста Карбонара",                   cat:"pizza",   time:25,  diff:"medium", diffLabel:"🟡 Средне", desc:"Спагетти с хрустящей панчеттой, яичным соусом и щедрой порцией пармезана. Настоящий римский рецепт.", img:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&q=80",
+      ingredients:[{n:"Спагетти",a:"320 г"},{n:"Панчетта",a:"150 г"},{n:"Яйца",a:"3 шт"},{n:"Желтки",a:"2 шт"},{n:"Пармезан",a:"100 г"},{n:"Чёрный перец",a:"1 ч.л."},{n:"Соль",a:"по вкусу"}],
+      steps:["Сварите спагетти в подсолённой воде до al dente, сохраните стакан воды от пасты.","Обжарьте панчетту до хруста без масла на среднем огне.","Взбейте яйца, желтки и пармезан, добавьте много чёрного перца.","Слейте воду с пасты, перемешайте с панчеттой, сняв с огня.","Быстро влейте яичную смесь, добавляя воду от пасты для нужной кремовости.","Подавайте сразу, посыпав ещё пармезаном."]},
+
+    { id:3,  title:"Классический Чизбургер",            cat:"burger",  time:20,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Сочная котлета из говядины, расплавленный чеддер, хрустящий салат и домашний соус. Идеальный бургер.", img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80",
+      ingredients:[{n:"Говяжий фарш 80/20",a:"200 г"},{n:"Булочка бриошь",a:"1 шт"},{n:"Чеддер",a:"2 ломтика"},{n:"Листья салата",a:"2 шт"},{n:"Томат",a:"2 кружка"},{n:"Маринованный огурец",a:"3 кружка"},{n:"Лук репчатый",a:"2 кольца"},{n:"Соус тысяча островов",a:"2 ст.л."}],
+      steps:["Сформируйте котлету, посолите и поперчите. Сделайте ямку в центре пальцем.","Обжарьте на раскалённой сковороде 3 минуты с каждой стороны.","За минуту до готовности положите чеддер, накройте крышкой.","Поджарьте разрезанную булочку на той же сковороде 1 минуту.","Смажьте оба среза соусом, соберите бургер."]},
+
+    { id:4,  title:"Роллы Калифорния",                  cat:"sushi",   time:45,  diff:"medium", diffLabel:"🟡 Средне", desc:"Краб, авокадо и огурец в нежном рисе, посыпанные тобико. Популярный западный ролл.", img:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=800&q=80",
+      ingredients:[{n:"Рис для суши",a:"300 г"},{n:"Нори",a:"3 листа"},{n:"Крабовые палочки",a:"6 шт"},{n:"Авокадо",a:"1 шт"},{n:"Огурец",a:"1/2 шт"},{n:"Тобико",a:"2 ст.л."},{n:"Рисовый уксус",a:"3 ст.л."},{n:"Кунжут",a:"1 ст.л."}],
+      steps:["Сварите рис, заправьте уксусом, сахаром и солью, остудите.","Нарежьте краб, авокадо и огурец полосками.","На бамбуковый коврик положите плёнку, распределите рис, сверху нори.","Выложите начинку вдоль края нори, плотно сверните ролл.","Обваляйте ролл в тобико и кунжуте. Нарежьте острым ножом."]},
+
+    { id:5,  title:"Круассаны с миндальным кремом",     cat:"baking",  time:90,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Слоёное масляное тесто с хрустящей корочкой и нежной миндальной начинкой. Французская классика.", img:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800&q=80",
+      ingredients:[{n:"Мука",a:"500 г"},{n:"Масло сливочное",a:"300 г"},{n:"Молоко",a:"250 мл"},{n:"Дрожжи",a:"10 г"},{n:"Сахар",a:"60 г"},{n:"Соль",a:"10 г"},{n:"Молотый миндаль",a:"150 г"},{n:"Яйцо для смазки",a:"1 шт"}],
+      steps:["Замесите тесто, уберите в холодильник на 1 час.","Раскатайте тесто, вложите пласт холодного масла, сложите конвертом.","Повторите складывание 4 раза с охлаждением по 30 минут между ними.","Раскатайте тонко, вырежьте треугольники, намажьте кремом, сверните.","Дайте расстояться 2 часа, смажьте яйцом, выпекайте 200°C 18 минут."]},
+
+    { id:6,  title:"Борщ украинский",                   cat:"soup",    time:90,  diff:"medium", diffLabel:"🟡 Средне", desc:"Густой наваристый борщ со свёклой, капустой, говядиной и ложкой сметаны. Душа русской кухни.", img:"https://images.unsplash.com/photo-1547592180-85f173990554?w=800&q=80",
+      ingredients:[{n:"Говядина на кости",a:"500 г"},{n:"Свёкла",a:"2 шт"},{n:"Капуста",a:"300 г"},{n:"Картофель",a:"3 шт"},{n:"Морковь",a:"1 шт"},{n:"Лук",a:"1 шт"},{n:"Томатная паста",a:"2 ст.л."},{n:"Чеснок",a:"3 зубчика"},{n:"Сметана",a:"для подачи"}],
+      steps:["Сварите бульон из говядины с луком и морковью 1.5 часа.","Обжарьте свёклу с томатной пастой и уксусом до мягкости.","Добавьте в бульон картофель, через 10 минут — капусту.","Влейте зажарку со свёклой, варите ещё 15 минут.","Добавьте чеснок и зелень, настаивайте 20 минут. Подавайте со сметаной."]},
+
+    { id:7,  title:"Греческий салат",                   cat:"salad",   time:15,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Помидоры, огурцы, маслины, перец и фета с оливковым маслом и орегано.", img:"https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800&q=80",
+      ingredients:[{n:"Помидоры",a:"4 шт"},{n:"Огурец",a:"1 шт"},{n:"Перец болгарский",a:"1 шт"},{n:"Лук красный",a:"1/2 шт"},{n:"Маслины",a:"100 г"},{n:"Фета",a:"150 г"},{n:"Оливковое масло",a:"4 ст.л."},{n:"Орегано",a:"1 ч.л."}],
+      steps:["Нарежьте помидоры, огурцы и перец крупными кусками.","Нарежьте лук полукольцами, добавьте к овощам.","Добавьте маслины и кусочки феты.","Заправьте оливковым маслом, посолите и посыпьте орегано.","Аккуратно перемешайте, не разбивая фету. Подавайте сразу."]},
+
+    { id:8,  title:"Стейк Рибай на гриле",              cat:"meat",    time:20,  diff:"medium", diffLabel:"🟡 Средне", desc:"Мраморная говядина прожарки medium rare с тимьяновым маслом и морской солью.", img:"https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80",
+      ingredients:[{n:"Рибай 2,5 см",a:"400 г"},{n:"Масло сливочное",a:"30 г"},{n:"Тимьян",a:"3 веточки"},{n:"Чеснок",a:"2 зубчика"},{n:"Морская соль",a:"по вкусу"},{n:"Чёрный перец",a:"по вкусу"},{n:"Оливковое масло",a:"1 ст.л."}],
+      steps:["Достаньте стейк из холодильника за 30 минут до готовки.","Обсушите, щедро посолите и поперчите со всех сторон.","Раскалите сковороду до дыма. Смажьте стейк маслом.","Жарьте 3 минуты, переверните, добавьте масло, тимьян и чеснок.","Поливайте стейк маслом ещё 2–3 минуты. Дайте отдохнуть 5 минут."]},
+
+    { id:9,  title:"Паэлья с морепродуктами",           cat:"seafood", time:60,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Испанский рис с креветками, мидиями, кальмарами и шафраном. Праздничное блюдо.", img:"https://images.unsplash.com/photo-1534080564583-6be75777b70a?w=800&q=80",
+      ingredients:[{n:"Рис бомба",a:"350 г"},{n:"Бульон рыбный",a:"900 мл"},{n:"Креветки тигровые",a:"300 г"},{n:"Мидии",a:"400 г"},{n:"Кальмары",a:"200 г"},{n:"Шафран",a:"1/2 ч.л."},{n:"Паприка копчёная",a:"1 ч.л."},{n:"Томаты",a:"2 шт"},{n:"Чеснок",a:"4 зубчика"}],
+      steps:["Замочите шафран в тёплом бульоне 10 минут. Нагрейте паэльеру.","Обжарьте чеснок и томаты 5 минут, добавьте паприку.","Всыпьте рис, перемешайте с соусом 2 минуты.","Влейте бульон с шафраном, не мешайте. Варите 15 минут.","Разложите морепродукты, накройте фольгой ещё на 10 минут.","Дайте постоять 5 минут. Подавайте с лимоном."]},
+
+    { id:10, title:"Том Ям с креветками",               cat:"soup",    time:35,  diff:"medium", diffLabel:"🟡 Средне", desc:"Остро-кислый тайский суп с кокосовым молоком, лемонграссом и тигровыми креветками.", img:"https://images.unsplash.com/photo-1562802378-063ec186a863?w=800&q=80",
+      ingredients:[{n:"Кокосовое молоко",a:"400 мл"},{n:"Бульон куриный",a:"400 мл"},{n:"Креветки",a:"300 г"},{n:"Лемонграсс",a:"2 стебля"},{n:"Галангал",a:"30 г"},{n:"Листья кафрского лайма",a:"6 шт"},{n:"Рыбный соус",a:"3 ст.л."},{n:"Лайм",a:"2 шт"},{n:"Чили",a:"2 шт"}],
+      steps:["Разбейте лемонграсс и нарежьте кусками. Нарежьте галангал.","Доведите бульон до кипения с лемонграссом, галангалом и листьями лайма.","Влейте кокосовое молоко, добавьте рыбный соус и чили.","Добавьте креветки, варите 3–4 минуты до розового цвета.","Выдавите сок лайма, попробуйте баланс соли-кислоты. Подавайте с зеленью."]},
+
+    { id:11, title:"Тирамису",                           cat:"baking",  time:30,  diff:"medium", diffLabel:"🟡 Средне", desc:"Итальянский десерт из савоярди, пропитанных эспрессо, с кремом маскарпоне и какао.", img:"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=800&q=80",
+      ingredients:[{n:"Маскарпоне",a:"500 г"},{n:"Яйца",a:"4 шт"},{n:"Сахар",a:"100 г"},{n:"Савоярди",a:"200 г"},{n:"Эспрессо",a:"200 мл"},{n:"Маскала или ром",a:"50 мл"},{n:"Какао-порошок",a:"для посыпки"}],
+      steps:["Сварите эспрессо, охладите, добавьте ром.","Взбейте желтки с сахаром добела. Добавьте маскарпоне, перемешайте.","Взбейте белки в крепкую пену, аккуратно введите в крем.","Окунайте савоярди в кофе по 1–2 секунды, выкладывайте в форму.","Покройте слоем крема, повторите. Уберите в холодильник на 6 часов.","Перед подачей густо посыпьте какао."]},
+
+    { id:12, title:"Суши нигири с лососем",             cat:"sushi",   time:40,  diff:"medium", diffLabel:"🟡 Средне", desc:"Классические нигири с нежным лососем, свежим васаби и японским рисом с уксусом.", img:"https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&q=80",
+      ingredients:[{n:"Рис для суши",a:"300 г"},{n:"Лосось свежий",a:"300 г"},{n:"Рисовый уксус",a:"3 ст.л."},{n:"Сахар",a:"1 ст.л."},{n:"Соль",a:"1 ч.л."},{n:"Васаби",a:"по вкусу"},{n:"Соевый соус",a:"для подачи"}],
+      steps:["Сварите рис, заправьте смесью уксуса, сахара и соли, обмахивая веером.","Охладите рис до температуры тела.","Нарежьте лосось ломтями 1 см поперёк волокон.","Смоченными руками сформируйте рисовые овалы.","Смажьте рыбу чуть васаби, положите на рис.","Подавайте с соевым соусом и маринованным имбирём."]},
+
+    { id:13, title:"Пицца Пепперони",                   cat:"pizza",   time:35,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Пышное тесто, острое пепперони, томатный соус и тянущаяся моцарелла.", img:"https://images.unsplash.com/photo-1628840042765-356cda07504e?w=800&q=80",
+      ingredients:[{n:"Тесто для пиццы",a:"300 г"},{n:"Пепперони",a:"100 г"},{n:"Томатный соус",a:"150 г"},{n:"Моцарелла",a:"200 г"},{n:"Орегано",a:"1 ч.л."},{n:"Оливковое масло",a:"1 ст.л."}],
+      steps:["Разогрейте духовку до 250°C. Раскатайте тесто.","Смажьте соусом, оставив 1 см по краю.","Выложите кружочки пепперони, сверху моцарелла.","Посыпьте орегано, сбрызните маслом.","Выпекайте 12–15 минут до хрустящей корочки."]},
+
+    { id:14, title:"Французский луковый суп",           cat:"soup",    time:60,  diff:"medium", diffLabel:"🟡 Средне", desc:"Карамелизированный лук в говяжьем бульоне под шапкой из грюйера на хрустящем хлебе.", img:"https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80",
+      ingredients:[{n:"Лук репчатый",a:"1 кг"},{n:"Бульон говяжий",a:"1,2 л"},{n:"Вино белое сухое",a:"150 мл"},{n:"Масло сливочное",a:"50 г"},{n:"Грюйер тёртый",a:"150 г"},{n:"Хлеб багет",a:"6 кусочков"},{n:"Тимьян",a:"3 веточки"},{n:"Мука",a:"1 ст.л."}],
+      steps:["Нарежьте лук полукольцами. Топите масло в кастрюле.","Карамелизируйте лук 40 минут на среднем огне, помешивая.","Добавьте муку, перемешайте 1 минуту. Влейте вино, выпарите.","Добавьте бульон и тимьян, варите 20 минут.","Поджарьте хлеб, разлейте суп по жаропрочным кружкам.","Положите хлеб, засыпьте грюйером, запекайте 5 минут под грилем."]},
+
+    { id:15, title:"Цезарь с курицей",                  cat:"salad",   time:20,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Хрустящий романо, сочная куриная грудка, крутоны и классический соус с анчоусами.", img:"https://images.unsplash.com/photo-1546793665-c74683f339c1?w=800&q=80",
+      ingredients:[{n:"Салат романо",a:"1 кочан"},{n:"Куриная грудка",a:"300 г"},{n:"Хлеб для крутонов",a:"2 куска"},{n:"Пармезан",a:"60 г"},{n:"Анчоусы",a:"4 шт"},{n:"Чеснок",a:"1 зубчик"},{n:"Горчица",a:"1 ч.л."},{n:"Майонез",a:"3 ст.л."},{n:"Лимонный сок",a:"1 ст.л."}],
+      steps:["Нарежьте хлеб кубиками, поджарьте с чесноком и маслом.","Обжарьте куриную грудку, нарежьте слайсами.","Разотрите анчоусы с чесноком, смешайте с горчицей, майонезом и лимоном.","Нарвите романо, заправьте соусом, перемешайте.","Добавьте курицу и крутоны, посыпьте пармезаном."]},
+
+    { id:16, title:"Утка по-пекински",                  cat:"meat",    time:180, diff:"hard",   diffLabel:"🔴 Сложно", desc:"Хрустящая карамелизированная утиная кожа с мандариновыми блинчиками и соусом хойсин.", img:"https://images.unsplash.com/photo-1518492104633-130d0cc84637?w=800&q=80",
+      ingredients:[{n:"Утка",a:"2 кг"},{n:"Мёд",a:"3 ст.л."},{n:"Соевый соус",a:"3 ст.л."},{n:"Рисовый уксус",a:"2 ст.л."},{n:"Блинчики мандариновые",a:"16 шт"},{n:"Соус хойсин",a:"100 г"},{n:"Огурец",a:"1 шт"},{n:"Зелёный лук",a:"6 перьев"}],
+      steps:["Облейте утку кипятком, обсушите, уберите на ночь в холодильник.","Натрите смесью мёда, соевого соуса и уксуса. Повторяйте каждый час.","Запекайте при 220°C 20 минут, затем 160°C ещё 1.5 часа.","Нарежьте хрустящую кожу и мясо тонкими ломтиками.","Прогрейте блинчики, подавайте с хойсином, огурцом и луком."]},
+
+    { id:17, title:"Гаспачо",                            cat:"soup",    time:20,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Холодный испанский суп из свежих томатов, перца, огурцов и оливкового масла. Освежает в жару.", img:"https://images.unsplash.com/photo-1615484477778-ca3b77940c25?w=800&q=80",
+      ingredients:[{n:"Томаты спелые",a:"1 кг"},{n:"Огурец",a:"1 шт"},{n:"Перец болгарский",a:"1 шт"},{n:"Хлеб белый",a:"2 куска"},{n:"Чеснок",a:"1 зубчик"},{n:"Оливковое масло",a:"4 ст.л."},{n:"Херес",a:"2 ст.л."},{n:"Соль, перец",a:"по вкусу"}],
+      steps:["Замочите хлеб в воде на 5 минут, отожмите.","Нарежьте все овощи, измельчите в блендере с хлебом.","Добавьте масло, херес, соль. Пробейте до однородности.","Протрите через сито для шёлковой текстуры.","Охладите минимум 2 часа. Подавайте с гарниром из нарезанных овощей."]},
+
+    { id:18, title:"Тако с говядиной",                  cat:"burger",  time:25,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Хрустящие кукурузные лепёшки с пряной говядиной, сальсой, гуакамоле и сметаной.", img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&q=80",
+      ingredients:[{n:"Говяжий фарш",a:"400 г"},{n:"Лепёшки кукурузные",a:"8 шт"},{n:"Смесь специй для тако",a:"2 ст.л."},{n:"Авокадо",a:"2 шт"},{n:"Томаты",a:"2 шт"},{n:"Лук красный",a:"1/2 шт"},{n:"Кинза",a:"пучок"},{n:"Лайм",a:"2 шт"},{n:"Сметана",a:"4 ст.л."}],
+      steps:["Обжарьте фарш до румяности, добавьте специи и 50 мл воды.","Приготовьте гуакамоле: разомните авокадо с лаймом, солью и кинзой.","Нарежьте томаты кубиком, смешайте с луком, лаймом — сальса готова.","Прогрейте лепёшки на сухой сковороде по 30 секунд.","Наполните: фарш, гуакамоле, сальса, сметана. Подавайте сразу."]},
+
+    { id:19, title:"Шоколадный фондан",                 cat:"baking",  time:25,  diff:"medium", diffLabel:"🟡 Средне", desc:"Тёплый шоколадный кекс с жидкой начинкой, поданный с шариком ванильного мороженого.", img:"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=800&q=80",
+      ingredients:[{n:"Шоколад 70%",a:"150 г"},{n:"Масло сливочное",a:"100 г"},{n:"Яйца",a:"2 шт"},{n:"Желтки",a:"2 шт"},{n:"Сахар",a:"80 г"},{n:"Мука",a:"50 г"},{n:"Ванильное мороженое",a:"для подачи"}],
+      steps:["Растопите шоколад с маслом на водяной бане, остудите.","Взбейте яйца с желтками и сахаром 5 минут до пышности.","Влейте шоколад, просейте муку, аккуратно перемешайте.","Разлейте по смазанным формочкам, уберите в холодильник на 30 минут.","Выпекайте при 200°C ровно 10–11 минут. Сразу переворачивайте. Подавайте с мороженым."]},
+
+    { id:20, title:"Жареные креветки в чесночном масле",cat:"seafood", time:15,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Тигровые креветки, обжаренные в ароматном чесночном масле с петрушкой и лимонным соком.", img:"https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=800&q=80",
+      ingredients:[{n:"Тигровые креветки",a:"500 г"},{n:"Масло сливочное",a:"50 г"},{n:"Чеснок",a:"4 зубчика"},{n:"Лимон",a:"1 шт"},{n:"Петрушка",a:"пучок"},{n:"Перец чили",a:"1 шт"},{n:"Соль",a:"по вкусу"}],
+      steps:["Очистите креветки, оставив хвостики. Обсушите.","Растопите масло, обжарьте чеснок и чили 1 минуту.","Добавьте креветки, жарьте 1–2 минуты с каждой стороны.","Выдавите лимонный сок, посыпьте петрушкой.","Подавайте немедленно с хлебом для соуса."]},
+
+    { id:21, title:"Лазанья Болоньезе",                 cat:"pizza",   time:90,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Слои свежей пасты с мясным рагу болоньезе, соусом бешамель и запечённым пармезаном.", img:"https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=800&q=80",
+      ingredients:[{n:"Листы лазаньи",a:"250 г"},{n:"Фарш говяжий+свиной",a:"500 г"},{n:"Томаты в соку",a:"400 г"},{n:"Молоко",a:"500 мл"},{n:"Мука",a:"50 г"},{n:"Масло сливочное",a:"50 г"},{n:"Пармезан",a:"100 г"},{n:"Лук, морковь, сельдерей",a:"по 1 шт"}],
+      steps:["Приготовьте болоньезе: обжарьте овощи, добавьте фарш, томаты, тушите 1 час.","Сделайте бешамель: растопите масло, добавьте муку, влейте молоко, помешивая.","Чередуйте слои: паста — болоньезе — бешамель. Повторите 4 раза.","Финальный слой — бешамель и пармезан.","Запекайте 40 минут при 180°C. Дайте постоять 15 минут."]},
+
+    { id:22, title:"Фалафель в питте",                  cat:"burger",  time:30,  diff:"easy",   diffLabel:"🟢 Легко",  desc:"Хрустящие нутовые шарики в питте с хумусом, свежими овощами и соусом тахини.", img:"https://images.unsplash.com/photo-1593001872095-7d5b3868fb1d?w=800&q=80",
+      ingredients:[{n:"Нут сухой замоченный",a:"300 г"},{n:"Лук",a:"1 шт"},{n:"Чеснок",a:"3 зубчика"},{n:"Кинза и петрушка",a:"по пучку"},{n:"Тмин",a:"1 ч.л."},{n:"Питта",a:"4 шт"},{n:"Тахини",a:"4 ст.л."},{n:"Огурец, томат, салат",a:"для начинки"}],
+      steps:["Пробейте нут с луком, чесноком и зеленью в блендере, не до пюре.","Добавьте специи, соль, щепотку разрыхлителя.","Сформируйте шарики и уберите в холодильник на 30 минут.","Обжарьте во фритюре 3 минуты до золотистого цвета.","Разрежьте питту, намажьте хумусом, наполните фалафелем и овощами, полейте тахини."]},
+
+    { id:23, title:"Ролл Дракон",                       cat:"sushi",   time:50,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Угорь внутри, авокадо снаружи с острым майонезом и соусом унаги. Шедевр японской кухни.", img:"https://images.unsplash.com/photo-1617196034099-5b04f4f96860?w=800&q=80",
+      ingredients:[{n:"Рис для суши",a:"300 г"},{n:"Нори",a:"4 листа"},{n:"Угорь запечённый",a:"200 г"},{n:"Авокадо",a:"2 шт"},{n:"Огурец",a:"1 шт"},{n:"Майонез острый",a:"2 ст.л."},{n:"Соус унаги",a:"4 ст.л."},{n:"Кунжут",a:"1 ст.л."}],
+      steps:["Приготовьте рис, заправьте уксусом, остудите.","Разложите рис на нори, перевернуть рисом вниз.","Положите угорь и огурец на нори, сверните ролл.","Нарежьте авокадо тонкими слайсами, выложите сверху рыбьей чешуёй.","Нарежьте, полейте унаги и острым майонезом, посыпьте кунжутом."]},
+
+    { id:24, title:"Тарт Татен",                        cat:"baking",  time:55,  diff:"medium", diffLabel:"🟡 Средне", desc:"Перевёрнутый яблочный пирог с карамелью на слоёном тесте. Классика французской патиссерии.", img:"https://images.unsplash.com/photo-1621743478914-cc8a86d7e7b5?w=800&q=80",
+      ingredients:[{n:"Яблоки кислые",a:"1,2 кг"},{n:"Сахар",a:"150 г"},{n:"Масло сливочное",a:"80 г"},{n:"Слоёное тесто",a:"250 г"},{n:"Ваниль",a:"1 стручок"},{n:"Корица",a:"1 ч.л."}],
+      steps:["Очистите яблоки, нарежьте четвертями.","Растопите сахар в жаропрочной сковороде до янтарной карамели.","Добавьте масло, ваниль, корицу. Плотно уложите яблоки.","Тушите на плите 15 минут. Накройте тестом, подогните края.","Выпекайте 25 минут при 200°C. Переверните сразу после духовки."]},
+
+    { id:25, title:"Осьминог на гриле",                 cat:"seafood", time:75,  diff:"hard",   diffLabel:"🔴 Сложно", desc:"Нежный осьминог, маринованный с лимоном и травами, поджаренный до хрустящих краёв.", img:"https://images.unsplash.com/photo-1625944525033-91e83b0e2e4e?w=800&q=80",
+      ingredients:[{n:"Осьминог",a:"1,5 кг"},{n:"Оливковое масло",a:"5 ст.л."},{n:"Лимон",a:"2 шт"},{n:"Чеснок",a:"4 зубчика"},{n:"Тимьян, орегано",a:"по 3 веточки"},{n:"Копчёная паприка",a:"1 ч.л."}],
+      steps:["Варите осьминога 45 минут в подсолённой воде до мягкости.","Охладите, разрежьте на щупальца.","Замаринуйте с маслом, лимонным соком, чесноком и травами на 30 минут.","Жарьте на раскалённом гриле 3–4 минуты до хрустящих краёв.","Подавайте с лимоном, хрустящим хлебом и руколой."]}
+];
+
+function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+}
+
+function renderNotFound() {
+    document.getElementById("pageContent").innerHTML = `
+        <div class="not-found">
+            <h2>😔 Рецепт не найден</h2>
+            <p>Возможно, он был удалён или ссылка некорректна.</p>
+            <a href="index.html" style="color:#dc2626;font-weight:700;">← Вернуться к списку</a>
+        </div>`;
+}
+
+function toggleFav(id) {
+    const btn = document.getElementById("favBtn");
+    const favs = JSON.parse(localStorage.getItem("favs")||"[]");
+    const idx = favs.indexOf(id);
+    if (idx === -1) { favs.push(id); btn.classList.add("active"); btn.innerHTML = "❤️ В избранном"; }
+    else { favs.splice(idx,1); btn.classList.remove("active"); btn.innerHTML = "🤍 В избранное"; }
+    localStorage.setItem("favs", JSON.stringify(favs));
+}
+
+function renderPage() {
+    const id = parseInt(getParam("id"));
+    const r = RECIPES.find(x => x.id === id);
+    if (!r) { renderNotFound(); return; }
+
+    document.title = r.title + " — Книга рецептов";
+
+    const favs = JSON.parse(localStorage.getItem("favs")||"[]");
+    const isFav = favs.includes(r.id);
+
+    const similar = RECIPES.filter(x => x.cat === r.cat && x.id !== r.id).slice(0,4);
+
+    document.getElementById("pageContent").innerHTML = `
+        <div class="detail-wrap">
+            <div>
+                <img class="hero-img" src="${r.img}" alt="${r.title}">
+            </div>
+            <div class="hero-side">
+                <h1 class="recipe-title">${r.title}</h1>
+                <p class="recipe-desc">${r.desc}</p>
+                <div class="stats">
+                    <div class="stat-chip">⏱ ${r.time} минут</div>
+                    <div class="stat-chip ${r.diff}">${r.diffLabel}</div>
+                    <div class="stat-chip">🍽 ${r.ingredients.length} ингредиентов</div>
+                    <div class="stat-chip">📝 ${r.steps.length} шагов</div>
+                </div>
+                <button class="fav-btn${isFav?' active':''}" id="favBtn" onclick="toggleFav(${r.id})">
+                    ${isFav?'❤️ В избранном':'🤍 В избранное'}
+                </button>
+            </div>
+        </div>
+
+        <div class="full-section">
+            <div class="section-card">
+                <h2>🛒 Ингредиенты</h2>
+                <ul class="ingredient-list">
+                    ${r.ingredients.map(i => `
+                        <li class="ingredient-item">
+                            <span class="ingredient-name">${i.n}</span>
+                            <span class="ingredient-amount">${i.a}</span>
+                        </li>`).join("")}
+                </ul>
+            </div>
+            <div class="section-card">
+                <h2>👨‍🍳 Приготовление</h2>
+                <ol class="step-list">
+                    ${r.steps.map((s,i) => `
+                        <li class="step-item">
+                            <div class="step-num">${i+1}</div>
+                            <div class="step-text">${s}</div>
+                        </li>`).join("")}
+                </ol>
+            </div>
+        </div>
+
+        ${similar.length ? `
+        <div class="similar-section">
+            <h2>🍴 Похожие рецепты</h2>
+            <div class="similar-grid">
+                ${similar.map(s => `
+                    <a href="detali.html?id=${s.id}" class="mini-card">
+                        <img src="${s.img}" alt="${s.title}" loading="lazy">
+                        <div class="mini-card-body">
+                            <div class="mini-card-title">${s.title}</div>
+                            <div class="mini-card-meta">⏱ ${s.time} мин &nbsp; ${s.diffLabel}</div>
+                        </div>
+                    </a>`).join("")}
+            </div>
+        </div>` : ""}
+    `;
+}
+
+renderPage();
+</script>
 </body>
 </html>
