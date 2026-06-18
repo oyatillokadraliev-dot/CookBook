@@ -5,91 +5,192 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Избранное — Книга рецептов</title>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .nav-bar { background: #ffffff; border-b: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f8fafc; color: #334155; margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; }
+
+        .nav-bar { background: #fff; border-bottom: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50; }
         .nav-container { max-width: 1200px; margin: 0 auto; height: 64px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; }
-        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; margin-left: 24px; color: #64748b; }
-        .nav-links .fav-link { color: #dc2626; font-weight: 600; }
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; flex-grow: 1; }
-        h1 { font-size: 1.875rem; font-weight: 900; tracking: -0.025em; color: #0f172a; margin-bottom: 32px; display: flex; align-items: center; gap: 8px; }
+        .nav-logo { font-size: 1.25rem; font-weight: 700; color: #dc2626; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; align-items: center; gap: 10px; }
+        .nav-links a { font-size: 0.875rem; font-weight: 500; text-decoration: none; padding: 6px 14px; border-radius: 9999px; }
+        .fav-link { color: #dc2626; background: #fef2f2; }
+        .home-link { color: #475569; }
+        .add-link { color: #fff; background: #dc2626; }
+
+        .container { max-width: 1200px; margin: 32px auto; padding: 0 20px; flex-grow: 1; width: 100%; }
+
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+        .page-header h1 { margin: 0; font-size: 1.875rem; font-weight: 900; color: #0f172a; display: flex; align-items: center; gap: 10px; }
+        .clear-btn { background: none; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 16px; font-size: 0.85rem; font-weight: 600; color: #94a3b8; cursor: pointer; transition: all 0.15s; }
+        .clear-btn:hover { border-color: #dc2626; color: #dc2626; background: #fef2f2; }
+
         .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-        .card { background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; }
-        .img-wrapper { aspect-ratio: 16/9; background: #f1f5f9; overflow: hidden; position: relative; }
+
+        .card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 1px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        .img-wrapper { aspect-ratio: 16/9; position: relative; overflow: hidden; background: #f1f5f9; }
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .remove-btn { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); color: #dc2626; text-decoration: none; padding: 6px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card-content { padding: 20px; }
-        .card h2 { margin: 0 0 16px 0; font-size: 1.125rem; font-weight: 700; }
-        .card h2 a { color: #0f172a; text-decoration: none; }
-        .card h2 a:hover { color: #dc2626; }
-        .meta-list { font-size: 0.75rem; color: #64748b; font-weight: 500; }
-        .meta-list p { margin: 6px 0; }
-        .meta-list span { color: #334155; }
-        .card-footer { padding: 0 20px 20px 20px; }
-        .open-btn { display: block; text-align: center; background: #f8fafc; color: #475569; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 10px 0; border-radius: 12px; transition: all 0.2s; }
+        .remove-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.92); color: #dc2626; border: none; padding: 6px 12px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.15s; }
+        .remove-btn:hover { background: #dc2626; color: #fff; }
+
+        .card-body { padding: 18px 20px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .card-title { margin: 0; font-size: 1.05rem; font-weight: 700; color: #0f172a; line-height: 1.3; }
+        .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+        .meta-chip { font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 8px; background: #f1f5f9; color: #475569; }
+        .meta-chip.easy { background: #dcfce7; color: #16a34a; }
+        .meta-chip.medium { background: #fef9c3; color: #a16207; }
+        .meta-chip.hard { background: #fee2e2; color: #dc2626; }
+
+        .open-btn { display: block; text-align: center; background: #f8fafc; color: #475569; text-decoration: none; font-size: 0.875rem; font-weight: 600; padding: 11px; border-top: 1px solid #f1f5f9; transition: all 0.15s; }
         .open-btn:hover { background: #fef2f2; color: #dc2626; }
-        .empty-state { text-align: center; padding: 64px 0; color: #94a3b8; background: #ffffff; border-radius: 16px; border: 1px solid #f1f5f9; grid-column: 1/-1; }
-        .empty-btn { display: inline-block; margin-top: 16px; background: #dc2626; color: white; text-decoration: none; font-size: 0.875rem; font-weight: 500; padding: 10px 20px; border-radius: 12px; }
-        .footer { background: #ffffff; border-top: 1px solid #e2e8f0; padding: 32px 20px; text-align: center; font-size: 0.875rem; color: #64748b; margin-top: auto; }
-        .footer a { color: #dc2626; text-decoration: none; font-weight: 600; margin: 0 4px; }
+
+        /* Empty state */
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 72px 20px; background: #fff; border-radius: 20px; border: 1px solid #f1f5f9; }
+        .empty-state .emoji { font-size: 3.5rem; margin-bottom: 16px; }
+        .empty-state h2 { margin: 0 0 8px 0; font-size: 1.4rem; color: #1e293b; }
+        .empty-state p { margin: 0 0 24px 0; color: #94a3b8; font-size: 0.9rem; }
+        .empty-btn { display: inline-block; background: #dc2626; color: #fff; text-decoration: none; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 14px; transition: background 0.15s; }
+        .empty-btn:hover { background: #b91c1c; }
+
+        footer { background: #f0f9ff; border-top: 2px solid #bae6fd; padding: 24px 20px; margin-top: auto; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-copy { font-weight: 700; color: #0369a1; font-size: 0.9rem; margin-bottom: 3px; }
+        .footer-sub { font-size: 0.82rem; color: #0284c7; }
+        .footer-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .footer-links a { text-decoration: none; padding: 9px 16px; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
+        .mail-btn { color: #0369a1; background: #fff; border: 1px solid #bae6fd; }
+        .tg-btn { color: #fff; background: #0284c7; }
+
+        @media (max-width: 600px) {
+            .page-header h1 { font-size: 1.4rem; }
+        }
     </style>
 </head>
 <body>
-    <nav class="nav-bar">
-        <div class="nav-container">
-            <a href="{% url 'recipe_list' %}" class="nav-logo">🍳 Книга рецептов</a>
-            <div class="nav-links">
-                <a href="{% url 'recipe_list' %}">Главная</a>
-                <a href="{% url 'favorites_list' %}" class="fav-link">❤️ Избранное ({{ fav_count }})</a>
-            </div>
-        </div>
-    </nav>
-    <div class="container">
-        <h1>❤️ Сохраненные рецепты</h1>
-        {% block content %}
-        <div class="recipe-grid">
-            {% for recipe in recipes %}
-            <div class="card">
-                <div>
-                    <div class="img-wrapper">
-                        {% if recipe.image %}
-                            <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
-                        {% else %}
-                            <img src="https://picsum.photos{{ recipe.id }}/600/400" alt="{{ recipe.title }}">
-                        {% endif %}
-                        <a href="{% url 'toggle_favorite' recipe.pk %}" class="remove-btn">Убрать ❌</a>
-                    </div>
-                    <div class="card-content">
-                        <h2><a href="{% url 'recipe_detail' recipe.pk %}">{{ recipe.title }}</a></h2>
-                        <div class="meta-list">
-                            <p>📁 Категория: <span>{{ recipe.category|default:"Не указана" }}</span></p>
-                            <p>⏱ Время: <span>{{ recipe.time_minutes }} мин.</span></p>
-                            <p>📊 Сложность: <span>
-                                {% if recipe.difficulty == 'easy' %}Легко
-                                {% elif recipe.difficulty == 'medium' %}Средне
-                                {% elif recipe.difficulty == 'hard' %}Сложно
-                                {% else %}{{ recipe.difficulty }}{% endif %}
-                            </span></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <a href="{% url 'recipe_detail' recipe.pk %}" class="open-btn">Открыть рецепт</a>
-                </div>
-            </div>
-            {% empty %}
-            <div class="empty-state">
-                <p style="margin: 0;">В вашем списке избранного пока пусто.</p>
-                <a href="{% url 'recipe_list' %}" class="empty-btn">Изучить рецепты</a>
-            </div>
-            {% endfor %}
-        </div>
-        {% endblock %}
-    </div>
 
-    <footer class="footer">
-        <div style="font-weight: 600; color: #1e293b; margin-bottom: 6px;">© 2026 Разработано Кадралиевым Оятулло в качестве коммерческого кейса.</div>
-        <div>Связаться со мной: <a href="mailto:oyatillokadraliev@gmail.com">oyatillokadraliev@gmail.com</a> | Telegram: <a href="https://t.me" target="_blank">@kadraliev_007</a></div>
-    </footer>
+<nav class="nav-bar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-logo">🍳 Книга рецептов</a>
+        <div class="nav-links">
+            <a href="index.html" class="home-link">Главная</a>
+            <a href="recipe_form.html" class="add-link">+ Рецепт</a>
+            <a href="favorites.html" class="fav-link">❤️ Избранное <span id="navCount"></span></a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1>❤️ Избранные рецепты</h1>
+        <button class="clear-btn" onclick="clearAll()">Очистить всё</button>
+    </div>
+    <div class="recipe-grid" id="favGrid"></div>
+</div>
+
+<footer>
+    <div class="footer-inner">
+        <div>
+            <div class="footer-copy">© 2026 Разработано Кадралиевым Оятулло</div>
+            <div class="footer-sub">Проект разработан в качестве коммерческого кейса для личного портфолио</div>
+        </div>
+        <div class="footer-links">
+            <a href="mailto:oyatillokadraliev@gmail.com" class="mail-btn">✉️ oyatillokadraliev@gmail.com</a>
+            <a href="https://t.me" target="_blank" class="tg-btn">💬 Написать в Telegram</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+const ALL_RECIPES = [
+    { id:1,  title:"Итальянская Пицца Маргарита",      cat:"pizza",   time:30,  diff:"easy",   diffLabel:"🟢 Легко",  img:"https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?w=600&q=80" },
+    { id:2,  title:"Паста Карбонара",                   cat:"pizza",   time:25,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600&q=80" },
+    { id:3,  title:"Классический Чизбургер",            cat:"burger",  time:20,  diff:"easy",   diffLabel:"🟢 Легко",  img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" },
+    { id:4,  title:"Роллы Калифорния",                  cat:"sushi",   time:45,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80" },
+    { id:5,  title:"Круассаны с миндальным кремом",     cat:"baking",  time:90,  diff:"hard",   diffLabel:"🔴 Сложно", img:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&q=80" },
+    { id:6,  title:"Борщ украинский",                   cat:"soup",    time:90,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80" },
+    { id:7,  title:"Греческий салат",                   cat:"salad",   time:15,  diff:"easy",   diffLabel:"🟢 Легко",  img:"https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&q=80" },
+    { id:8,  title:"Стейк Рибай на гриле",              cat:"meat",    time:20,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" },
+    { id:9,  title:"Паэлья с морепродуктами",           cat:"seafood", time:60,  diff:"hard",   diffLabel:"🔴 Сложно", img:"https://images.unsplash.com/photo-1534080564583-6be75777b70a?w=600&q=80" },
+    { id:10, title:"Том Ям с креветками",               cat:"soup",    time:35,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1562802378-063ec186a863?w=600&q=80" },
+    { id:11, title:"Тирамису",                           cat:"baking",  time:30,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600&q=80" },
+    { id:12, title:"Суши нигири с лососем",             cat:"sushi",   time:40,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1553621042-f6e147245754?w=600&q=80" },
+    { id:13, title:"Пицца Пепперони",                   cat:"pizza",   time:35,  diff:"easy",   diffLabel:"🟢 Легко",  img:"https://images.unsplash.com/photo-1628840042765-356cda07504e?w=600&q=80" },
+    { id:14, title:"Французский луковый суп",           cat:"soup",    time:60,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80" },
+    { id:15, title:"Цезарь с курицей",                  cat:"salad",   time:20,  diff:"easy",   diffLabel:"🟢 Легко",  img:"https://images.unsplash.com/photo-1546793665-c74683f339c1?w=600&q=80" },
+    { id:16, title:"Утка по-пекински",                  cat:"meat",    time:180, diff:"hard",   diffLabel:"🔴 Сложно", img:"https://images.unsplash.com/photo-1518492104633-130d0cc84637?w=600&q=80" },
+    { id:17, title:"Гаспачо",                            cat:"soup",    time:20,  diff:"easy",   diffLabel:"🟢 Легко",  img:"https://images.unsplash.com/photo-1615484477778-ca3b77940c25?w=600&q=80" },
+    { id:18, title:"Тако с говядиной",                  cat:"burger",  time:25,  diff:"easy",   diffLabel:"🟢 Легко",  img:"https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80" },
+    { id:19, title:"Шоколадный фондан",                 cat:"baking",  time:25,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&q=80" },
+    { id:20, title:"Жареные креветки в чесночном масле",cat:"seafood", time:15,  diff:"easy",   diffLabel:"🟢 Легко",  img:"https://images.unsplash.com/photo-1559410545-0bdcd187e0a6?w=600&q=80" },
+    { id:21, title:"Лазанья Болоньезе",                 cat:"pizza",   time:90,  diff:"hard",   diffLabel:"🔴 Сложно", img:"https://images.unsplash.com/photo-1574894709920-11b28e7367e3?w=600&q=80" },
+    { id:22, title:"Фалафель в питте",                  cat:"burger",  time:30,  diff:"easy",   diffLabel:"🟢 Легко",  img:"https://images.unsplash.com/photo-1593001872095-7d5b3868fb1d?w=600&q=80" },
+    { id:23, title:"Ролл Дракон",                       cat:"sushi",   time:50,  diff:"hard",   diffLabel:"🔴 Сложно", img:"https://images.unsplash.com/photo-1617196034099-5b04f4f96860?w=600&q=80" },
+    { id:24, title:"Тарт Татен",                        cat:"baking",  time:55,  diff:"medium", diffLabel:"🟡 Средне", img:"https://images.unsplash.com/photo-1621743478914-cc8a86d7e7b5?w=600&q=80" },
+    { id:25, title:"Осьминог на гриле",                 cat:"seafood", time:75,  diff:"hard",   diffLabel:"🔴 Сложно", img:"https://images.unsplash.com/photo-1625944525033-91e83b0e2e4e?w=600&q=80" },
+];
+
+function getFavIds() {
+    return JSON.parse(localStorage.getItem("favs")||"[]");
+}
+
+function getCustomRecipes() {
+    return JSON.parse(localStorage.getItem("customRecipes")||"[]");
+}
+
+function removeFav(id) {
+    let favs = getFavIds();
+    favs = favs.filter(x => x !== id);
+    localStorage.setItem("favs", JSON.stringify(favs));
+    render();
+}
+
+function clearAll() {
+    if (confirm("Очистить весь список избранного?")) {
+        localStorage.removeItem("favs");
+        render();
+    }
+}
+
+function render() {
+    const favIds = getFavIds();
+    const customs = getCustomRecipes();
+    const allRecipes = [...ALL_RECIPES, ...customs];
+    const favRecipes = allRecipes.filter(r => favIds.includes(r.id));
+
+    const grid = document.getElementById("favGrid");
+    const navCount = document.getElementById("navCount");
+    navCount.textContent = favRecipes.length ? `(${favRecipes.length})` : "";
+
+    if (!favRecipes.length) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <div class="emoji">💔</div>
+                <h2>Избранное пусто</h2>
+                <p>Добавьте рецепты, нажав ❤️ на странице рецепта</p>
+                <a href="index.html" class="empty-btn">Изучить рецепты</a>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = favRecipes.map(r => `
+        <div class="card">
+            <div class="img-wrapper">
+                <img src="${r.img}" alt="${r.title}" loading="lazy">
+                <button class="remove-btn" onclick="removeFav(${r.id})">✕ Убрать</button>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">${r.title}</h3>
+                <div class="meta">
+                    <span class="meta-chip">⏱ ${r.time} мин</span>
+                    <span class="meta-chip ${r.diff}">${r.diffLabel}</span>
+                </div>
+            </div>
+            <a href="detali.html?id=${r.id}" class="open-btn">Открыть рецепт →</a>
+        </div>
+    `).join("");
+}
+
+render();
+</script>
 </body>
 </html>
